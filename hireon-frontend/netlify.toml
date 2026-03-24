@@ -6,7 +6,7 @@
   # This proxies all requests from /api/* to your Render backend
   # Update the "to" URL if your Render backend URL is different
   from = "/api/*"
-  to = "https://hireon-backend.onrender.com/:splat"
+  to = "https://test-deploy-hireon-1.onrender.com/:splat"
   status = 200
   force = true
 
