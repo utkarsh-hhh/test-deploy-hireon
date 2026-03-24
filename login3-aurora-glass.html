@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hireon — Login · Aurora Glass</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&family=Sora:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden
+    }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative
+    }
+
+    /* ── AURORA BG ── */
+    .aurora {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #f0eeff 0%, #ffe8f8 35%, #e8f0ff 65%, #f0fff8 100%);
+      z-index: 0
+    }
+
+    .aura {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none
+    }
+
+    .a1 {
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(108, 71, 255, .28), transparent 70%);
+      top: -250px;
+      right: -150px;
+      animation: drift1 16s ease-in-out infinite alternate
+    }
+
+    .a2 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255, 107, 198, .22), transparent 70%);
+      bottom: -200px;
+      left: -150px;
+      animation: drift2 20s ease-in-out infinite alternate
+    }
+
+    .a3 {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(0, 212, 200, .18), transparent 70%);
+      top: 40%;
+      left: 35%;
+      animation: drift3 12s ease-in-out infinite alternate
+    }
+
+    .a4 {
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(251, 191, 36, .14), transparent 70%);
+      bottom: 20%;
+      right: 25%;
+      animation: drift1 9s ease-in-out infinite alternate
+    }
+
+    @keyframes drift1 {
+      to {
+        transform: translate(40px, -50px)
+      }
+    }
+
+    @keyframes drift2 {
+      to {
+        transform: translate(-30px, 40px)
+      }
+    }
+
+    @keyframes drift3 {
+      to {
+        transform: translate(50px, -30px)
+      }
+    }
+
+    /* ── FLOATING ELEMENTS ── */
+    .float-card {
+      position: absolute;
+      background: rgba(255, 255, 255, .55);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, .8);
+      border-radius: 16px;
+      padding: 14px 18px;
+      box-shadow: 0 8px 32px rgba(108, 71, 255, .12);
+      font-size: 12px;
+      font-weight: 600;
+      color: #5a4e7a;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      animation: floatAnim 6s ease-in-out infinite alternate;
+      z-index: 1
+    }
+
+    .fc1 {
+      top: 12%;
+      left: 6%;
+      animation-delay: 0s
+    }
+
+    .fc2 {
+      top: 18%;
+      right: 8%;
+      animation-delay: 1.5s
+    }
+
+    .fc3 {
+      bottom: 18%;
+      left: 7%;
+      animation-delay: 2.5s
+    }
+
+    .fc4 {
+      bottom: 12%;
+      right: 6%;
+      animation-delay: 0.8s
+    }
+
+    @keyframes floatAnim {
+      from {
+        transform: translateY(0)
+      }
+
+      to {
+        transform: translateY(-12px)
+      }
+    }
+
+    .fc-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%
+    }
+
+    /* ── CARD ── */
+    .card {
+      position: relative;
+      z-index: 2;
+      width: 430px;
+      background: rgba(255, 255, 255, .65);
+      border: 1px solid rgba(255, 255, 255, .9);
+      border-radius: 28px;
+      padding: 46px 42px;
+      backdrop-filter: blur(40px);
+      box-shadow: 0 24px 80px rgba(108, 71, 255, .16), 0 2px 0 rgba(255, 255, 255, .9) inset;
+      animation: cardIn .7s cubic-bezier(.16, 1, .3, 1) both
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(24px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    /* ── LOGO ── */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 32px;
+      justify-content: center
+    }
+
+    .logo-mark {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #6c47ff, #ff6bc6);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(108, 71, 255, .35)
+    }
+
+    .logo-text {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+      background: linear-gradient(135deg, #6c47ff, #ff6bc6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text
+    }
+
+    /* ── HEADINGS ── */
+    .h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: #1a1040;
+      text-align: center;
+      margin-bottom: 5px;
+      letter-spacing: -.4px
+    }
+
+    .h2 {
+      font-size: 13px;
+      color: #9689bb;
+      text-align: center;
+      margin-bottom: 30px
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      background: rgba(108, 71, 255, .07);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 24px
+    }
+
+    .tab {
+      flex: 1;
+      padding: 9px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #9689bb;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all .22s
+    }
+
+    .tab.active {
+      background: #fff;
+      color: #6c47ff;
+      box-shadow: 0 2px 8px rgba(108, 71, 255, .15)
+    }
+
+    /* ── FIELD ── */
+    .field {
+      margin-bottom: 14px;
+      position: relative
+    }
+
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #5a4e7a;
+      letter-spacing: .7px;
+      text-transform: uppercase;
+      margin-bottom: 7px
+    }
+
+    .field input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, .8);
+      border: 1.5px solid rgba(108, 71, 255, .14);
+      border-radius: 12px;
+      color: #1a1040;
+      font-family: 'Sora', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: all .2s;
+      backdrop-filter: blur(8px)
+    }
+
+    .field input:focus {
+      border-color: #6c47ff;
+      background: rgba(255, 255, 255, .95);
+      box-shadow: 0 0 0 3px rgba(108, 71, 255, .1)
+    }
+
+    .field input::placeholder {
+      color: #c4b9de
+    }
+
+    /* ── ROW ── */
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      font-size: 12px
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #9689bb;
+      cursor: pointer
+    }
+
+    .remember input {
+      accent-color: #6c47ff
+    }
+
+    .forgot {
+      color: #6c47ff;
+      font-weight: 600;
+      text-decoration: none
+    }
+
+    /* ── SUBMIT ── */
+    .submit {
+      width: 100%;
+      padding: 13px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #6c47ff, #9b6bff);
+      color: #fff;
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all .25s;
+      box-shadow: 0 8px 24px rgba(108, 71, 255, .38), 0 1px 0 rgba(255, 255, 255, .2) inset
+    }
+
+    .submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 36px rgba(108, 71, 255, .5)
+    }
+
+    /* ── DIVIDER ── */
+    .or {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 18px 0;
+      font-size: 11px;
+      color: #c4b9de;
+      font-weight: 600
+    }
+
+    .or::before,
+    .or::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(108, 71, 255, .1)
+    }
+
+    /* ── SOCIAL ── */
+    .socials {
+      display: flex;
+      gap: 10px
+    }
+
+    .s-btn {
+      flex: 1;
+      padding: 11px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(108, 71, 255, .15);
+      background: rgba(255, 255, 255, .7);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #5a4e7a;
+      transition: all .2s;
+      backdrop-filter: blur(8px)
+    }
+
+    .s-btn:hover {
+      border-color: rgba(108, 71, 255, .4);
+      background: rgba(255, 255, 255, .9);
+      transform: translateY(-1px)
+    }
+
+    .signup-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 12px;
+      color: #9689bb
+    }
+
+    .signup-link a {
+      color: #6c47ff;
+      font-weight: 700;
+      text-decoration: none
+    }
+  </style>
+</head>
+
+<body>
+  <div class="aurora">
+    <div class="aura a1"></div>
+    <div class="aura a2"></div>
+    <div class="aura a3"></div>
+    <div class="aura a4"></div>
+  </div>
+
+  <!-- Floating ambient cards -->
+  <div class="float-card fc1">
+    <div class="fc-dot" style="background:#10b981"></div> 24 shortlisted today
+  </div>
+  <div class="float-card fc2">
+    <div class="fc-dot" style="background:#6c47ff"></div> AI scoring live
+  </div>
+  <div class="float-card fc3">
+    <div class="fc-dot" style="background:#ff6bc6"></div> 3 interviews scheduled
+  </div>
+  <div class="float-card fc4">
+    <div class="fc-dot" style="background:#00d4c8"></div> 95% match accuracy
+  </div>
+
+  <div class="card">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg width="17" height="17" viewBox="0 0 22 22" fill="none">
+          <rect x="2" y="3" width="4" height="16" rx="2" fill="white" opacity="0.95" />
+          <rect x="16" y="3" width="4" height="16" rx="2" fill="white" opacity="0.95" />
+          <rect x="2" y="9" width="18" height="4" rx="2" fill="white" opacity="0.95" />
+        </svg>
+      </div>
+      <span class="logo-text">Hireon</span>
+    </div>
+
+    <div class="h1">Good to see you</div>
+    <div class="h2">Sign in to your hiring dashboard</div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab(this,'pass')">Password</div>
+      <div class="tab" onclick="switchTab(this,'magic')">Magic Link</div>
+    </div>
+
+    <div id="pass-form">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" placeholder="you@company.com">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" placeholder="••••••••••">
+      </div>
+      <div class="row">
+        <label class="remember"><input type="checkbox"> Remember me</label>
+        <a class="forgot" href="#">Forgot password?</a>
+      </div>
+      <button class="submit">Sign In →</button>
+    </div>
+
+    <div id="magic-form" style="display:none">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" placeholder="you@company.com">
+      </div>
+      <div style="height:64px"></div>
+      <button class="submit">Send Magic Link ✨</button>
+    </div>
+
+    <div class="or">or continue with</div>
+    <div class="socials">
+      <button class="s-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24">
+          <path
+            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+            fill="#4285F4" />
+          <path
+            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+            fill="#34A853" />
+          <path
+            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
+            fill="#FBBC05" />
+          <path
+            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+            fill="#EA4335" />
+        </svg>
+        Google
+      </button>
+      <button class="s-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24">
+          <rect x="1" y="1" width="10.5" height="10.5" fill="#F25022" />
+          <rect x="12.5" y="1" width="10.5" height="10.5" fill="#7FBA00" />
+          <rect x="1" y="12.5" width="10.5" height="10.5" fill="#00A4EF" />
+          <rect x="12.5" y="12.5" width="10.5" height="10.5" fill="#FFB900" />
+        </svg>
+        Microsoft
+      </button>
+      <button class="s-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2">
+          <path
+            d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+        </svg>
+        LinkedIn
+      </button>
+    </div>
+
+    <div class="signup-link">No account? <a href="#">Try Hireon free →</a></div>
+  </div>
+
+  <script>
+    function switchTab(el, type) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('pass-form').style.display = type === 'pass' ? 'block' : 'none';
+      document.getElementById('magic-form').style.display = type === 'magic' ? 'block' : 'none';
+    }
+  </script>
+</body>
+
+</html>

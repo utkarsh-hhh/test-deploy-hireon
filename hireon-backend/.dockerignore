@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Local env files (secrets must not be baked into the image)
+.env
+.env.*
+
+# Uploaded files (persisted via Docker named volume, not baked in)
+uploads/
+
+# Test and dev scripts
+test_*.py
+check_*.py
+clear_db.py
+verify_matches.py
+
+# IDE
+.idea/
+.vscode/
+
+# Git
+.git/
+.gitignore

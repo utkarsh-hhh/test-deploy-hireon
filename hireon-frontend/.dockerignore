@@ -1,0 +1,25 @@
+# Node modules (re-installed fresh inside container)
+node_modules/
+
+# Previous build output
+dist/
+
+# Environment files (never bake secrets into image)
+.env
+.env.*
+.env.local
+.env.production
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+npm-debug.log*

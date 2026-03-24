@@ -1,0 +1,3015 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hireon — Interviewer Panel</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@700;800;900&family=Fraunces:ital,wght@0,700;0,900;1,400&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --violet: #6c47ff;
+      --violet-mid: #8b6bff;
+      --pink: #ff6bc6;
+      --teal: #00d4c8;
+      --amber: #fbbf24;
+      --red: #ef4444;
+      --green: #10b981;
+      --sidebar-w: 230px;
+      --topbar-h: 60px;
+      --r: 14px
+    }
+
+    [data-theme="light"] {
+      --bg: #f0eeff;
+      --text: #1a1040;
+      --text-mid: #5a4e7a;
+      --text-lite: #9689bb;
+      --topbar-bg: rgba(255, 255, 255, 0.90);
+      --topbar-border: rgba(108, 71, 255, 0.09);
+      --sidebar-bg: rgba(255, 255, 255, 0.78);
+      --sidebar-border: rgba(108, 71, 255, 0.09);
+      --card-bg: rgba(255, 255, 255, 0.82);
+      --card-border: rgba(255, 255, 255, 0.96);
+      --input-bg: rgba(108, 71, 255, 0.06);
+      --input-border: rgba(108, 71, 255, 0.15);
+      --table-head: rgba(248, 245, 255, 0.88);
+      --table-border: rgba(108, 71, 255, 0.07);
+      --shadow: 0 4px 24px rgba(108, 71, 255, 0.10);
+      --shadow-h: 0 12px 40px rgba(108, 71, 255, 0.18);
+      --kpi-bg: #ffffff;
+      --activity-bg: rgba(255, 255, 255, 0.68);
+      --modal-bg: #ffffff;
+      --toast-bg: #ffffff;
+      --toast-border: rgba(108, 71, 255, 0.12);
+      --sb-active: rgba(108, 71, 255, 0.10);
+      --sb-hover: rgba(108, 71, 255, 0.06);
+      --search-bg: rgba(108, 71, 255, 0.05);
+      --blob-op: 0.5
+    }
+
+    [data-theme="dark"] {
+      --bg: #0c0720;
+      --text: #e8e0ff;
+      --text-mid: #a094cc;
+      --text-lite: #6a5e99;
+      --topbar-bg: rgba(12, 7, 32, 0.94);
+      --topbar-border: rgba(108, 71, 255, 0.20);
+      --sidebar-bg: rgba(12, 7, 32, 0.92);
+      --sidebar-border: rgba(108, 71, 255, 0.16);
+      --card-bg: rgba(26, 12, 56, 0.86);
+      --card-border: rgba(108, 71, 255, 0.18);
+      --input-bg: rgba(108, 71, 255, 0.10);
+      --input-border: rgba(108, 71, 255, 0.26);
+      --table-head: rgba(20, 8, 50, 0.92);
+      --table-border: rgba(108, 71, 255, 0.11);
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.40);
+      --shadow-h: 0 12px 40px rgba(108, 71, 255, 0.28);
+      --kpi-bg: rgba(20, 10, 48, 0.92);
+      --activity-bg: rgba(20, 10, 48, 0.80);
+      --modal-bg: #140838;
+      --toast-bg: #1a0c40;
+      --toast-border: rgba(108, 71, 255, 0.32);
+      --sb-active: rgba(108, 71, 255, 0.20);
+      --sb-hover: rgba(108, 71, 255, 0.11);
+      --search-bg: rgba(108, 71, 255, 0.11);
+      --blob-op: 0.35
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      transition: background .35s, color .35s
+    }
+
+    .blobs {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: var(--blob-op)
+    }
+
+    .b1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(108, 71, 255, .38), transparent 70%);
+      top: -130px;
+      right: -100px;
+      animation: da 14s ease-in-out infinite alternate
+    }
+
+    .b2 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255, 107, 198, .32), transparent 70%);
+      bottom: -100px;
+      left: -100px;
+      animation: db 18s ease-in-out infinite alternate
+    }
+
+    .b3 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0, 212, 200, .28), transparent 70%);
+      top: 40%;
+      left: 35%;
+      animation: dc 11s ease-in-out infinite alternate
+    }
+
+    @keyframes da {
+      0% {
+        transform: translate(0, 0)
+      }
+
+      100% {
+        transform: translate(28px, -38px)
+      }
+    }
+
+    @keyframes db {
+      0% {
+        transform: translate(0, 0)
+      }
+
+      100% {
+        transform: translate(-18px, 28px)
+      }
+    }
+
+    @keyframes dc {
+      0% {
+        transform: translate(0, 0)
+      }
+
+      100% {
+        transform: translate(36px, -28px)
+      }
+    }
+
+    [data-theme="dark"] .grid-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image: linear-gradient(rgba(108, 71, 255, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(108, 71, 255, .04) 1px, transparent 1px);
+      background-size: 38px 38px
+    }
+
+    [data-theme="light"] .grid-overlay {
+      display: none
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh
+    }
+
+    /* TOPBAR */
+    .topbar {
+      height: var(--topbar-h);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      background: var(--topbar-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--topbar-border);
+      flex-shrink: 0;
+      gap: 16px;
+      transition: background .35s
+    }
+
+    .topbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      flex-shrink: 0
+    }
+
+    .logo-orbit {
+      position: relative;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .logo-orbit-ring {
+      position: absolute;
+      inset: -7px;
+      border-radius: 50%;
+      border: 1px dashed rgba(108, 71, 255, .4);
+      animation: spin 5s linear infinite
+    }
+
+    .logo-orbit-ring::after {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #00d4c8;
+      box-shadow: 0 0 8px rgba(0, 212, 200, .9)
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .logo-box {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--violet), var(--pink));
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(108, 71, 255, .35)
+    }
+
+    .logo-wordmark {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.5px
+    }
+
+    .lwl {
+      background: linear-gradient(135deg, var(--violet), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text
+    }
+
+    .lwd {
+      background: linear-gradient(135deg, #fff 30%, rgba(255, 107, 198, .9));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text
+    }
+
+    .role-pill {
+      padding: 5px 14px;
+      background: linear-gradient(135deg, rgba(0, 212, 200, .12), rgba(94, 234, 212, .06));
+      border: 1px solid rgba(0, 212, 200, .25);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--teal);
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .role-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+      animation: pulse 2s infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .4
+      }
+    }
+
+    .theme-toggle {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all .2s
+    }
+
+    .theme-toggle:hover {
+      background: rgba(108, 71, 255, .15)
+    }
+
+    .tb-user {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      padding: 6px 12px 6px 6px;
+      cursor: pointer
+    }
+
+    .tb-av {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--violet), var(--pink));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px
+    }
+
+    .tb-uname {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text)
+    }
+
+    .tb-urole {
+      font-size: 10px;
+      color: var(--text-lite)
+    }
+
+    /* LAYOUT */
+    .body {
+      display: flex;
+      flex: 1;
+      overflow: hidden
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: var(--sidebar-bg);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid var(--sidebar-border);
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow-y: auto;
+      transition: background .35s
+    }
+
+    .sb-section {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-lite);
+      padding: 12px 12px 4px
+    }
+
+    .sb-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all .2s;
+      user-select: none
+    }
+
+    .sb-item:hover {
+      background: var(--sb-hover);
+      color: var(--violet)
+    }
+
+    .sb-item.active {
+      background: var(--sb-active);
+      color: var(--violet);
+      font-weight: 700
+    }
+
+    .sb-icon {
+      font-size: 16px;
+      width: 22px;
+      text-align: center;
+      flex-shrink: 0
+    }
+
+    .sb-count {
+      margin-left: auto;
+      background: linear-gradient(135deg, var(--violet), var(--pink));
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px
+    }
+
+    .sb-count.teal {
+      background: linear-gradient(135deg, var(--teal), #5eead4)
+    }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 30px
+    }
+
+    .page {
+      display: none
+    }
+
+    .page.active {
+      display: block
+    }
+
+    .page-header {
+      margin-bottom: 26px
+    }
+
+    .page-title {
+      font-family: 'Fraunces', serif;
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 6px;
+      letter-spacing: -.4px
+    }
+
+    .page-sub {
+      font-size: 14px;
+      color: var(--text-mid)
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--r);
+      padding: 22px;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+      transition: box-shadow .3s, background .35s
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-h)
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px
+    }
+
+    .ctag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: rgba(108, 71, 255, .09);
+      color: var(--violet)
+    }
+
+    .ctag.green {
+      background: rgba(16, 185, 129, .12);
+      color: var(--green)
+    }
+
+    .ctag.amber {
+      background: rgba(251, 191, 36, .10);
+      color: #d97706
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px
+    }
+
+    .grid3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px
+    }
+
+    .grid4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px
+    }
+
+    /* KPI */
+    .kpi-card {
+      background: var(--kpi-bg);
+      border: 1px solid var(--table-border);
+      border-radius: var(--r);
+      padding: 20px;
+      transition: all .3s
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-h)
+    }
+
+    .kpi-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px
+    }
+
+    .kpi-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px
+    }
+
+    .ki1 {
+      background: linear-gradient(135deg, rgba(108, 71, 255, .14), rgba(139, 107, 255, .06))
+    }
+
+    .ki2 {
+      background: linear-gradient(135deg, rgba(255, 107, 198, .14), rgba(255, 157, 215, .06))
+    }
+
+    .ki3 {
+      background: linear-gradient(135deg, rgba(0, 212, 200, .14), rgba(94, 234, 212, .06))
+    }
+
+    .ki4 {
+      background: linear-gradient(135deg, rgba(251, 191, 36, .14), rgba(253, 230, 138, .06))
+    }
+
+    .kpi-delta {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px
+    }
+
+    .kpi-delta.up {
+      background: rgba(16, 185, 129, .12);
+      color: var(--green)
+    }
+
+    .kpi-delta.neu {
+      background: rgba(108, 71, 255, .09);
+      color: var(--violet)
+    }
+
+    .kpi-val {
+      font-family: 'Fraunces', serif;
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--text);
+      margin-bottom: 4px
+    }
+
+    .kpi-lbl {
+      font-size: 12px;
+      color: var(--text-lite);
+      font-weight: 500
+    }
+
+    /* BUTTONS */
+    .btn {
+      padding: 9px 18px;
+      border-radius: 10px;
+      font-family: 'Sora', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--violet), var(--violet-mid));
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(108, 71, 255, .30)
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(108, 71, 255, .40)
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--violet);
+      border: 1.5px solid rgba(108, 71, 255, .30)
+    }
+
+    .btn-outline:hover {
+      background: rgba(108, 71, 255, .07)
+    }
+
+    .btn-ghost {
+      background: rgba(108, 71, 255, .08);
+      color: var(--violet)
+    }
+
+    .btn-ghost:hover {
+      background: rgba(108, 71, 255, .14)
+    }
+
+    .btn-green-solid {
+      background: linear-gradient(135deg, var(--green), #34d399);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, .3)
+    }
+
+    .btn-green-solid:hover {
+      transform: translateY(-1px)
+    }
+
+    .btn-red {
+      background: rgba(239, 68, 68, .10);
+      color: var(--red);
+      border: 1.5px solid rgba(239, 68, 68, .2)
+    }
+
+    .btn-red:hover {
+      background: rgba(239, 68, 68, .18)
+    }
+
+    .btn-sm {
+      padding: 6px 13px;
+      font-size: 12px;
+      border-radius: 8px
+    }
+
+    .btn-xs {
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 7px
+    }
+
+    /* CHIPS */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600
+    }
+
+    .chip-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor
+    }
+
+    .chip-green {
+      background: rgba(16, 185, 129, .14);
+      color: #059669
+    }
+
+    .chip-blue {
+      background: rgba(59, 130, 246, .12);
+      color: #1d4ed8
+    }
+
+    .chip-yellow {
+      background: rgba(251, 191, 36, .12);
+      color: #92400e
+    }
+
+    .chip-violet {
+      background: rgba(108, 71, 255, .10);
+      color: var(--violet)
+    }
+
+    .chip-teal {
+      background: rgba(0, 212, 200, .10);
+      color: var(--teal)
+    }
+
+    .chip-gray {
+      background: rgba(107, 114, 128, .10);
+      color: #6b7280
+    }
+
+    /* FORM */
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-mid);
+      margin-bottom: 6px;
+      display: block;
+      letter-spacing: .5px
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--input-border);
+      font-family: 'Sora', sans-serif;
+      font-size: 13px;
+      color: var(--text);
+      background: var(--kpi-bg);
+      outline: none;
+      transition: border .2s
+    }
+
+    .form-input:focus {
+      border-color: var(--violet)
+    }
+
+    .f-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--input-border);
+      font-family: 'Sora', sans-serif;
+      font-size: 13px;
+      color: var(--text);
+      background: var(--kpi-bg);
+      resize: vertical;
+      min-height: 90px;
+      outline: none;
+      transition: border .2s;
+      line-height: 1.6
+    }
+
+    .f-textarea:focus {
+      border-color: var(--violet)
+    }
+
+    /* ACTIVITY */
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--activity-bg);
+      border: 1px solid var(--table-border);
+      transition: background .2s
+    }
+
+    .activity-item:hover {
+      background: var(--kpi-bg)
+    }
+
+    .act-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0
+    }
+
+    .act-text {
+      flex: 1
+    }
+
+    .act-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text)
+    }
+
+    .act-sub {
+      font-size: 11px;
+      color: var(--text-lite);
+      margin-top: 2px
+    }
+
+    .act-time {
+      font-size: 11px;
+      color: var(--text-lite);
+      flex-shrink: 0
+    }
+
+    /* INTERVIEW QUEUE */
+    .iq-card {
+      background: var(--kpi-bg);
+      border: 1px solid var(--table-border);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: all .3s;
+      position: relative;
+      overflow: hidden
+    }
+
+    .iq-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      border-radius: 4px 0 0 4px
+    }
+
+    .iq-card.now::before {
+      background: linear-gradient(180deg, var(--green), #34d399)
+    }
+
+    .iq-card.soon::before {
+      background: linear-gradient(180deg, var(--violet), var(--violet-mid))
+    }
+
+    .iq-card.done::before {
+      background: linear-gradient(180deg, rgba(107, 114, 128, .4), rgba(107, 114, 128, .15))
+    }
+
+    .iq-card:hover {
+      box-shadow: var(--shadow-h);
+      transform: translateY(-2px)
+    }
+
+    .iq-time-block {
+      text-align: center;
+      min-width: 58px;
+      flex-shrink: 0
+    }
+
+    .iq-hr {
+      font-family: 'Fraunces', serif;
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--violet);
+      line-height: 1
+    }
+
+    .iq-ampm {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-lite);
+      margin-top: 1px
+    }
+
+    .iq-date {
+      font-size: 10px;
+      color: var(--text-lite);
+      margin-top: 3px
+    }
+
+    .iq-info {
+      flex: 1
+    }
+
+    .iq-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 3px
+    }
+
+    .iq-round {
+      font-size: 12px;
+      color: var(--text-mid);
+      margin-bottom: 10px
+    }
+
+    .iq-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px
+    }
+
+    .iq-tag {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: rgba(108, 71, 255, .08);
+      color: var(--violet)
+    }
+
+    .iq-meet {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--teal)
+    }
+
+    .iq-meet a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    .iq-meet a:hover {
+      text-decoration: underline
+    }
+
+    .iq-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      flex-shrink: 0;
+      align-items: flex-end
+    }
+
+    /* SCORECARD */
+    .sc-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--table-border)
+    }
+
+    .sc-row:last-child {
+      border-bottom: none
+    }
+
+    .sc-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      min-width: 150px
+    }
+
+    .sc-desc {
+      font-size: 11px;
+      color: var(--text-lite);
+      margin-top: 2px
+    }
+
+    .sc-stars {
+      display: flex;
+      gap: 5px;
+      margin-left: auto
+    }
+
+    .sc-star {
+      font-size: 24px;
+      cursor: pointer;
+      color: rgba(108, 71, 255, .15);
+      transition: color .15s;
+      user-select: none;
+      line-height: 1
+    }
+
+    .sc-star.on {
+      color: var(--amber)
+    }
+
+    .sc-weight {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      background: rgba(108, 71, 255, .08);
+      color: var(--violet);
+      white-space: nowrap;
+      flex-shrink: 0
+    }
+
+    /* REC BTNS */
+    .rec-btns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .rec-btn {
+      padding: 9px 18px;
+      border-radius: 10px;
+      font-family: 'Sora', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      border: 2px solid;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .rec-hire {
+      border-color: var(--green);
+      color: var(--green)
+    }
+
+    .rec-hire.sel,
+    .rec-hire:hover {
+      background: var(--green);
+      color: #fff
+    }
+
+    .rec-maybe {
+      border-color: var(--amber);
+      color: #d97706
+    }
+
+    .rec-maybe.sel,
+    .rec-maybe:hover {
+      background: var(--amber);
+      color: #fff
+    }
+
+    .rec-no {
+      border-color: var(--red);
+      color: var(--red)
+    }
+
+    .rec-no.sel,
+    .rec-no:hover {
+      background: var(--red);
+      color: #fff
+    }
+
+    /* PREP KIT */
+    .prep-q {
+      background: var(--kpi-bg);
+      border: 1px solid var(--table-border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      transition: background .2s
+    }
+
+    .prep-q:hover {
+      background: var(--activity-bg)
+    }
+
+    .prep-q-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--violet), var(--violet-mid));
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .prep-q-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.65;
+      font-weight: 500
+    }
+
+    .prep-q-cat {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-top: 7px
+    }
+
+    .cat-tech {
+      background: rgba(108, 71, 255, .10);
+      color: var(--violet)
+    }
+
+    .cat-culture {
+      background: rgba(0, 212, 200, .10);
+      color: var(--teal)
+    }
+
+    .cat-logic {
+      background: rgba(255, 107, 198, .10);
+      color: var(--pink)
+    }
+
+    .cat-backend {
+      background: rgba(16, 185, 129, .10);
+      color: var(--green)
+    }
+
+    /* CHECKLIST */
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--table-border);
+      cursor: pointer
+    }
+
+    .checklist-item:last-child {
+      border-bottom: none
+    }
+
+    .chk {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 2px solid var(--input-border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+      font-size: 11px;
+      color: transparent
+    }
+
+    .chk.done {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff
+    }
+
+    .chk-text {
+      font-size: 13px;
+      color: var(--text);
+      transition: all .2s
+    }
+
+    .chk.done~.chk-text {
+      color: var(--text-lite);
+      text-decoration: line-through
+    }
+
+    /* PROGRESS */
+    .prog-bar {
+      height: 8px;
+      background: rgba(108, 71, 255, .08);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 6px
+    }
+
+    .prog-fill {
+      height: 100%;
+      border-radius: 4px;
+      animation: gw 1.4s ease both
+    }
+
+    @keyframes gw {
+      from {
+        width: 0%
+      }
+    }
+
+    /* STAGE BADGE */
+    .sbadge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap
+    }
+
+    .sbv {
+      background: rgba(108, 71, 255, .12);
+      color: var(--violet)
+    }
+
+    .sbg {
+      background: rgba(16, 185, 129, .12);
+      color: #059669
+    }
+
+    .sbp {
+      background: rgba(255, 107, 198, .10);
+      color: var(--pink)
+    }
+
+    /* LIVE ROOM */
+    .live-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 18px;
+      height: calc(100vh - 182px);
+      min-height: 520px
+    }
+
+    .live-main {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 0
+    }
+
+    .live-side {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto
+    }
+
+    .live-banner {
+      background: linear-gradient(135deg, #1a0050, #2d0080, #4a1a9a);
+      border-radius: var(--r);
+      padding: 20px 24px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0
+    }
+
+    .live-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 80% 50%, rgba(255, 107, 198, .15), transparent 60%)
+    }
+
+    .live-cname {
+      font-family: 'Fraunces', serif;
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 3px
+    }
+
+    .live-cmeta {
+      font-size: 12px;
+      opacity: .8;
+      margin-bottom: 8px
+    }
+
+    .live-timer {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      text-align: center
+    }
+
+    .timer-val {
+      font-family: 'Fraunces', serif;
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      line-height: 1
+    }
+
+    .timer-lbl {
+      font-size: 9px;
+      opacity: .65;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 2px
+    }
+
+    .timer-controls {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      justify-content: center
+    }
+
+    .timer-btn {
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: none;
+      font-family: 'Sora', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .tbtn-start {
+      background: rgba(16, 185, 129, .9);
+      color: #fff
+    }
+
+    .tbtn-start:hover {
+      background: var(--green)
+    }
+
+    .tbtn-end {
+      background: rgba(239, 68, 68, .7);
+      color: #fff
+    }
+
+    .tbtn-end:hover {
+      background: var(--red)
+    }
+
+    .lq-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      flex-shrink: 0
+    }
+
+    .lq-box {
+      background: var(--kpi-bg);
+      border: 1.5px solid var(--table-border);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      transition: all .2s
+    }
+
+    .lq-box.rated {
+      border-color: var(--violet);
+      background: linear-gradient(135deg, rgba(108, 71, 255, .06), rgba(255, 107, 198, .03))
+    }
+
+    .lq-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-mid);
+      margin-bottom: 9px;
+      letter-spacing: .3px
+    }
+
+    .lq-stars {
+      display: flex;
+      justify-content: center;
+      gap: 3px
+    }
+
+    .lq-star {
+      font-size: 18px;
+      cursor: pointer;
+      color: rgba(108, 71, 255, .18);
+      user-select: none;
+      transition: color .12s
+    }
+
+    .lq-star.on {
+      color: var(--amber)
+    }
+
+    .live-notes-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0
+    }
+
+    .live-notes-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-mid);
+      margin-bottom: 8px;
+      letter-spacing: .4px;
+      flex-shrink: 0
+    }
+
+    .live-notes-area {
+      flex: 1;
+      min-height: 0;
+      padding: 14px;
+      border-radius: var(--r);
+      border: 1.5px solid var(--input-border);
+      background: var(--kpi-bg);
+      font-family: 'Sora', sans-serif;
+      font-size: 13px;
+      color: var(--text);
+      resize: none;
+      outline: none;
+      line-height: 1.75;
+      transition: border .2s
+    }
+
+    .live-notes-area:focus {
+      border-color: var(--violet)
+    }
+
+    .live-q-item {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--table-border);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      cursor: pointer
+    }
+
+    .live-q-item:last-child {
+      border-bottom: none
+    }
+
+    .live-q-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: rgba(108, 71, 255, .10);
+      color: var(--violet);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      transition: all .2s
+    }
+
+    .live-q-text {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.55;
+      transition: all .2s
+    }
+
+    .live-q-item.asked .live-q-num {
+      background: rgba(16, 185, 129, .15);
+      color: var(--green)
+    }
+
+    .live-q-item.asked .live-q-text {
+      color: var(--text-lite);
+      text-decoration: line-through
+    }
+
+    /* COLLAB */
+    .panelist-card {
+      background: var(--kpi-bg);
+      border: 1px solid var(--table-border);
+      border-radius: 14px;
+      padding: 18px;
+      transition: background .35s
+    }
+
+    .panelist-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px
+    }
+
+    .p-av {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      flex-shrink: 0
+    }
+
+    .p-scores {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px
+    }
+
+    .ps-box {
+      background: var(--input-bg);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center
+    }
+
+    .ps-val {
+      font-family: 'Fraunces', serif;
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--text)
+    }
+
+    .ps-lbl {
+      font-size: 10px;
+      color: var(--text-lite);
+      margin-top: 2px
+    }
+
+    /* TABLE */
+    table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    thead th {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      color: var(--text-lite);
+      padding: 10px 16px;
+      text-align: left;
+      background: var(--table-head);
+      border-bottom: 1px solid var(--table-border)
+    }
+
+    tbody td {
+      padding: 12px 16px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--table-border);
+      vertical-align: middle;
+      color: var(--text)
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none
+    }
+
+    tbody tr:hover td {
+      background: rgba(108, 71, 255, .025)
+    }
+
+    .cav {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0
+    }
+
+    .cv1 {
+      background: linear-gradient(135deg, #ddd6fe, #a78bfa)
+    }
+
+    .cv2 {
+      background: linear-gradient(135deg, #fce7f3, #f9a8d4)
+    }
+
+    .cv3 {
+      background: linear-gradient(135deg, #d1fae5, #6ee7b7)
+    }
+
+    .cv4 {
+      background: linear-gradient(135deg, #fef3c7, #fde68a)
+    }
+
+    .cv5 {
+      background: linear-gradient(135deg, #e0e7ff, #a5b4fc)
+    }
+
+    .cv6 {
+      background: linear-gradient(135deg, #f3e8ff, #d8b4fe)
+    }
+
+    .spill {
+      display: inline-block;
+      padding: 2px 7px;
+      background: rgba(108, 71, 255, .09);
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--violet);
+      margin: 2px
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 8, 50, .55);
+      backdrop-filter: blur(8px);
+      z-index: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    .modal-box {
+      background: var(--modal-bg);
+      border-radius: 22px;
+      width: 680px;
+      max-width: 96vw;
+      max-height: 92vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 28px 90px rgba(0, 0, 0, .28);
+      border: 1px solid var(--card-border);
+      transform: translateY(22px);
+      transition: transform .32s, background .35s
+    }
+
+    .modal-overlay.open .modal-box {
+      transform: translateY(0)
+    }
+
+    .modal-head {
+      padding: 22px 26px;
+      border-bottom: 1px solid var(--table-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(108, 71, 255, .05), rgba(255, 107, 198, .03))
+    }
+
+    .modal-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-mid);
+      transition: background .2s
+    }
+
+    .modal-close:hover {
+      background: rgba(239, 68, 68, .1);
+      color: var(--red)
+    }
+
+    .modal-body {
+      overflow-y: auto;
+      flex: 1
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--toast-bg);
+      border: 1px solid var(--toast-border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-h);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      z-index: 1000;
+      transform: translateX(120%);
+      transition: transform .4s cubic-bezier(0.16, 1, .3, 1);
+      max-width: 320px
+    }
+
+    .toast.show {
+      transform: translateX(0)
+    }
+
+    .toast-icon {
+      font-size: 18px;
+      flex-shrink: 0
+    }
+
+    .df {
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      padding: 14px 16px
+    }
+
+    .df-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-lite);
+      margin-bottom: 6px
+    }
+
+    .df-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text)
+    }
+  </style>
+</head>
+
+<body>
+  <div class="blobs">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+  <div class="grid-overlay"></div>
+  <div class="app">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-logo">
+        <div class="logo-orbit">
+          <div class="logo-orbit-ring"></div>
+          <div class="logo-box"><svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <rect x="2" y="3" width="4" height="16" rx="2" fill="white" opacity="0.95" />
+              <rect x="16" y="3" width="4" height="16" rx="2" fill="white" opacity="0.95" />
+              <rect x="2" y="9" width="18" height="4" rx="2" fill="white" opacity="0.95" />
+              <path d="M16 5 L20 1 M18.2 1 L20 1 L20 2.8" stroke="rgba(0,212,200,1)" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round" />
+            </svg></div>
+        </div>
+        <span class="logo-wordmark lwl" id="logo-text">Hireon</span>
+      </div>
+      <div class="role-pill"><span class="role-dot"></span>Panel Dashboard</div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+        <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙</button>
+        <div class="tb-user">
+          <div class="tb-av">👨‍💻</div>
+          <div>
+            <div class="tb-uname">Rajesh Kumar</div>
+            <div class="tb-urole">Lead Engineer</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="body">
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <div class="sb-section">My Panel</div>
+        <div class="sb-item active" onclick="nav('dashboard',this)"><span class="sb-icon">🏠</span>Dashboard</div>
+        <div class="sb-item" onclick="nav('queue',this)"><span class="sb-icon">📥</span>My Interviews<span
+            class="sb-count teal">4</span></div>
+        <div class="sb-item" onclick="nav('scorecard',this)"><span class="sb-icon">📊</span>Scorecard & Eval<span
+            class="sb-count">2</span></div>
+        <div class="sb-item" onclick="nav('collab',this)"><span class="sb-icon">🤝</span>Panel Collaboration</div>
+        <div class="sb-item" onclick="nav('analytics',this)"><span class="sb-icon">📈</span>My Analytics</div>
+        <div class="sb-item" onclick="nav('prepkit',this)"><span class="sb-icon">🗒️</span>Prep Kit</div>
+        <div class="sb-item" onclick="nav('liveroom',this)"><span class="sb-icon">🟢</span>Live Room</div>
+        <div style="margin-top:auto;padding:14px 10px 4px">
+          <div
+            style="background:linear-gradient(135deg,rgba(108,71,255,.09),rgba(255,107,198,.05));border:1px solid rgba(108,71,255,.14);border-radius:12px;padding:14px;text-align:center">
+            <div
+              style="width:40px;height:40px;background:linear-gradient(135deg,var(--violet),var(--pink));border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <rect x="2" y="3" width="4" height="16" rx="2" fill="white" opacity="0.95" />
+                <rect x="16" y="3" width="4" height="16" rx="2" fill="white" opacity="0.95" />
+                <rect x="2" y="9" width="18" height="4" rx="2" fill="white" opacity="0.95" />
+              </svg></div>
+            <div
+              style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:800;background:linear-gradient(135deg,var(--violet),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">
+              Hireon AI</div>
+            <div style="font-size:10px;color:var(--text-lite);margin-top:4px">Hire on autopilot</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN -->
+      <div class="main" id="main">
+
+        <!-- DASHBOARD -->
+        <div class="page active" id="page-dashboard">
+          <div class="page-header">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+              <div>
+                <div class="page-title">Good morning, Rajesh 👋</div>
+                <div class="page-sub">You have <strong>4 interviews today</strong> — 1 live right now. Let's go! 🎯
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span class="chip chip-teal"><span class="chip-dot"></span>1 Live Now</span>
+                <button class="btn btn-primary btn-sm"
+                  onclick="nav('liveroom',document.querySelector('[onclick*=liveroom]'))">🟢 Enter Live Room</button>
+              </div>
+            </div>
+          </div>
+          <div class="grid4" style="margin-bottom:22px">
+            <div class="kpi-card">
+              <div class="kpi-top">
+                <div class="kpi-icon ki1">📅</div>
+                <div class="kpi-delta up">Today</div>
+              </div>
+              <div class="kpi-val">4</div>
+              <div class="kpi-lbl">Interviews Today</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top">
+                <div class="kpi-icon ki2">⏳</div>
+                <div class="kpi-delta neu">Pending</div>
+              </div>
+              <div class="kpi-val">2</div>
+              <div class="kpi-lbl">Scorecards Due</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top">
+                <div class="kpi-icon ki3">✅</div>
+                <div class="kpi-delta up">Done</div>
+              </div>
+              <div class="kpi-val">1</div>
+              <div class="kpi-lbl">Completed Today</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top">
+                <div class="kpi-icon ki4">📊</div>
+                <div class="kpi-delta up">This month</div>
+              </div>
+              <div class="kpi-val">28</div>
+              <div class="kpi-lbl">Total Interviews</div>
+            </div>
+          </div>
+          <div class="grid2" style="margin-bottom:22px">
+            <div class="card">
+              <div class="card-title">Today's Schedule — Feb 19, 2026</div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div class="activity-item" style="cursor:pointer"
+                  onclick="nav('liveroom',document.querySelector('[onclick*=liveroom]'))">
+                  <div class="act-icon" style="background:rgba(16,185,129,.12)">🟢</div>
+                  <div class="act-text">
+                    <div class="act-title">Sarah Chen — Technical Round</div>
+                    <div class="act-sub">09:00 AM · In Progress · meet.google.com/hrn-abc-123</div>
+                  </div>
+                  <span class="chip chip-teal"><span class="chip-dot"></span>Live</span>
+                </div>
+                <div class="activity-item" style="cursor:pointer"
+                  onclick="nav('queue',document.querySelector('[onclick*=queue]'))">
+                  <div class="act-icon ki1">🔵</div>
+                  <div class="act-text">
+                    <div class="act-title">Marcus Reid — Culture Fit</div>
+                    <div class="act-sub">11:30 AM · Confirmed</div>
+                  </div>
+                  <span class="chip chip-violet"><span class="chip-dot"></span>Upcoming</span>
+                </div>
+                <div class="activity-item" style="cursor:pointer"
+                  onclick="nav('queue',document.querySelector('[onclick*=queue]'))">
+                  <div class="act-icon ki1">🔵</div>
+                  <div class="act-text">
+                    <div class="act-title">Omar Farisi — First Round</div>
+                    <div class="act-sub">02:00 PM · Awaiting confirm</div>
+                  </div>
+                  <span class="chip chip-yellow"><span class="chip-dot"></span>Unconfirmed</span>
+                </div>
+                <div class="activity-item" style="cursor:pointer"
+                  onclick="nav('scorecard',document.querySelector('[onclick*=scorecard]'))">
+                  <div class="act-icon" style="background:rgba(107,114,128,.1)">✅</div>
+                  <div class="act-text">
+                    <div class="act-title">Lena Schwartz — Portfolio Review</div>
+                    <div class="act-sub">08:00 AM · Completed · Scorecard due</div>
+                  </div>
+                  <button class="btn btn-primary btn-xs">Fill</button>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Quick Access</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <div onclick="nav('prepkit',document.querySelector('[onclick*=prepkit]'))"
+                  style="background:linear-gradient(135deg,rgba(108,71,255,.07),rgba(139,107,255,.03));border:1px solid rgba(108,71,255,.12);border-radius:12px;padding:14px;cursor:pointer;transition:all .25s"
+                  onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+                  <div style="font-size:24px;margin-bottom:7px">🗒️</div>
+                  <div style="font-size:12px;font-weight:700;color:var(--text)">Prep Kit</div>
+                  <div style="font-size:10px;color:var(--text-lite);margin-top:3px">Questions & checklist</div>
+                </div>
+                <div onclick="nav('scorecard',document.querySelector('[onclick*=scorecard]'))"
+                  style="background:linear-gradient(135deg,rgba(255,107,198,.07),rgba(255,157,215,.03));border:1px solid rgba(255,107,198,.12);border-radius:12px;padding:14px;cursor:pointer;transition:all .25s"
+                  onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+                  <div style="font-size:24px;margin-bottom:7px">📊</div>
+                  <div style="font-size:12px;font-weight:700;color:var(--text)">Scorecard</div>
+                  <div style="font-size:10px;color:var(--text-lite);margin-top:3px">Rate candidates</div>
+                </div>
+                <div onclick="nav('collab',document.querySelector('[onclick*=collab]'))"
+                  style="background:linear-gradient(135deg,rgba(0,212,200,.07),rgba(94,234,212,.03));border:1px solid rgba(0,212,200,.12);border-radius:12px;padding:14px;cursor:pointer;transition:all .25s"
+                  onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+                  <div style="font-size:24px;margin-bottom:7px">🤝</div>
+                  <div style="font-size:12px;font-weight:700;color:var(--text)">Panel Collaboration</div>
+                  <div style="font-size:10px;color:var(--text-lite);margin-top:3px">Team discussion</div>
+                </div>
+                <div onclick="nav('analytics',document.querySelector('[onclick*=analytics]'))"
+                  style="background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(253,230,138,.03));border:1px solid rgba(251,191,36,.12);border-radius:12px;padding:14px;cursor:pointer;transition:all .25s"
+                  onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+                  <div style="font-size:24px;margin-bottom:7px">📈</div>
+                  <div style="font-size:12px;font-weight:700;color:var(--text)">My Analytics</div>
+                  <div style="font-size:10px;color:var(--text-lite);margin-top:3px">Your performance</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MY INTERVIEW QUEUE -->
+        <div class="page" id="page-queue">
+          <div class="page-header">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+              <div>
+                <div class="page-title">📥 My Interview Queue</div>
+                <div class="page-sub">Your assigned interviews today — confirm, reschedule or jump into the live room.
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sm"
+                onclick="nav('liveroom',document.querySelector('[onclick*=liveroom]'));showToast('🟢','Entering Live Room for Sarah Chen')">🟢
+                Enter Live Room</button>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:20px">
+            <div
+              style="font-size:11px;font-weight:700;color:var(--green);letter-spacing:1.2px;text-transform:uppercase;display:flex;align-items:center;gap:8px">
+              <span
+                style="width:8px;height:8px;background:var(--green);border-radius:50%;display:inline-block;animation:pulse 2s infinite"></span>Live
+              Now</div>
+            <div class="iq-card now">
+              <div class="iq-time-block">
+                <div class="iq-hr">09:00</div>
+                <div class="iq-ampm">AM</div>
+                <div class="iq-date">Today</div>
+              </div>
+              <div class="iq-info">
+                <div class="iq-name">Sarah Chen</div>
+                <div class="iq-round">Technical Round · 45 min slot</div>
+                <div class="iq-tags"><span class="iq-tag">React</span><span class="iq-tag">TypeScript</span><span
+                    class="iq-tag">Node.js</span><span class="iq-tag">6.5 yrs</span></div>
+                <div class="iq-meet">🎥 <a href="#">meet.google.com/hrn-abc-123</a></div>
+              </div>
+              <div class="iq-actions">
+                <button class="btn btn-primary btn-sm"
+                  onclick="nav('liveroom',document.querySelector('[onclick*=liveroom]'));showToast('🟢','Entering Live Room')">Enter
+                  Room</button>
+                <button class="btn btn-ghost btn-sm" onclick="openResume('sarah')">View Resume</button>
+                <button class="btn btn-outline btn-sm"
+                  onclick="nav('prepkit',document.querySelector('[onclick*=prepkit]'))">Prep Kit</button>
+              </div>
+            </div>
+            <div
+              style="font-size:11px;font-weight:700;color:var(--violet);letter-spacing:1.2px;text-transform:uppercase;margin-top:4px">
+              Upcoming Today</div>
+            <div class="iq-card soon">
+              <div class="iq-time-block">
+                <div class="iq-hr">11:30</div>
+                <div class="iq-ampm">AM</div>
+                <div class="iq-date">Today</div>
+              </div>
+              <div class="iq-info">
+                <div class="iq-name">Marcus Reid</div>
+                <div class="iq-round">Culture Fit Round · 30 min slot</div>
+                <div class="iq-tags"><span class="iq-tag">React</span><span class="iq-tag">Redux</span><span
+                    class="iq-tag">5.2 yrs</span></div>
+                <div class="iq-meet">🎥 <a href="#">meet.google.com/hrn-def-456</a></div>
+              </div>
+              <div class="iq-actions">
+                <button class="btn btn-green-solid btn-sm" onclick="showToast('✅','Marcus Reid confirmed!')">✓
+                  Confirm</button>
+                <button class="btn btn-ghost btn-sm" onclick="openResume('marcus')">View Resume</button>
+                <button class="btn btn-outline btn-sm"
+                  onclick="showToast('📅','Reschedule request sent')">Reschedule</button>
+              </div>
+            </div>
+            <div class="iq-card soon">
+              <div class="iq-time-block">
+                <div class="iq-hr">02:00</div>
+                <div class="iq-ampm">PM</div>
+                <div class="iq-date">Today</div>
+              </div>
+              <div class="iq-info">
+                <div class="iq-name">Omar Farisi</div>
+                <div class="iq-round">Technical First Round · 45 min slot</div>
+                <div class="iq-tags"><span class="iq-tag">React</span><span class="iq-tag">GraphQL</span><span
+                    class="iq-tag">AWS</span><span class="iq-tag">7 yrs</span></div>
+                <div class="iq-meet">🎥 <a href="#">meet.google.com/hrn-ghi-789</a></div>
+              </div>
+              <div class="iq-actions">
+                <button class="btn btn-green-solid btn-sm" onclick="showToast('✅','Omar Farisi confirmed!')">✓
+                  Confirm</button>
+                <button class="btn btn-ghost btn-sm" onclick="openResume('omar')">View Resume</button>
+                <button class="btn btn-outline btn-sm"
+                  onclick="showToast('📅','Reschedule request sent')">Reschedule</button>
+              </div>
+            </div>
+            <div
+              style="font-size:11px;font-weight:700;color:var(--text-lite);letter-spacing:1.2px;text-transform:uppercase;margin-top:4px">
+              Completed</div>
+            <div class="iq-card done" style="opacity:.8">
+              <div class="iq-time-block">
+                <div class="iq-hr" style="color:var(--text-lite)">08:00</div>
+                <div class="iq-ampm">AM</div>
+                <div class="iq-date">Today</div>
+              </div>
+              <div class="iq-info">
+                <div class="iq-name">Lena Schwartz</div>
+                <div class="iq-round">Portfolio Review · Done ✅</div>
+                <div class="iq-tags"><span class="iq-tag">Figma</span><span class="iq-tag">React</span><span
+                    class="iq-tag">CSS</span><span class="iq-tag">4.8 yrs</span></div>
+              </div>
+              <div class="iq-actions">
+                <button class="btn btn-primary btn-sm"
+                  onclick="nav('scorecard',document.querySelector('[onclick*=scorecard]'));showToast('📊','Opening scorecard')">📊
+                  Scorecard</button>
+                <button class="btn btn-ghost btn-sm" onclick="openResume('lena')">View Resume</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCORECARD & EVAL -->
+        <div class="page" id="page-scorecard">
+          <div class="page-header">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+              <div>
+                <div class="page-title">📊 Scorecard & Evaluation</div>
+                <div class="page-sub">Rate candidates across key competencies — submit to generate AI analysis.</div>
+              </div>
+            </div>
+          </div>
+          <div class="grid2">
+            <div>
+              <div class="card" style="margin-bottom:18px">
+                <div class="card-title">Candidate Profile</div>
+                <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+                  <div class="cav cv5" style="width:52px;height:52px;font-size:24px">👩‍🎨</div>
+                  <div>
+                    <div style="font-size:18px;font-weight:700;color:var(--text);font-family:'Fraunces',serif">Lena
+                      Schwartz</div>
+                    <div style="font-size:13px;color:var(--text-mid)">UI Engineer · 4.8 yrs experience</div>
+                    <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap"><span
+                        class="spill">Figma</span><span class="spill">React</span><span class="spill">CSS</span><span
+                        class="spill">Design Systems</span></div>
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                  <div class="df">
+                    <div class="df-label">💼 Experience</div>
+                    <div class="df-value">4.8 Years</div>
+                  </div>
+                  <div class="df">
+                    <div class="df-label">📍 Location</div>
+                    <div class="df-value">Bengaluru, KA</div>
+                  </div>
+                  <div class="df">
+                    <div class="df-label">🏢 Company</div>
+                    <div class="df-value">Myntra Designs</div>
+                  </div>
+                  <div class="df">
+                    <div class="df-label">🎓 Education</div>
+                    <div class="df-value">B.Des NID Ahmedabad</div>
+                  </div>
+                </div>
+                <button class="btn btn-ghost btn-sm" style="margin-top:14px;width:100%;justify-content:center"
+                  onclick="openResume('lena')">📄 View Full Resume</button>
+              </div>
+              <div class="card">
+                <div class="card-title">Your Recommendation</div>
+                <div class="rec-btns" id="sc-rec-btns" style="margin-bottom:16px">
+                  <button class="rec-btn rec-hire" onclick="selRec(this)">✅ Hire</button>
+                  <button class="rec-btn rec-maybe" onclick="selRec(this)">🤔 Maybe</button>
+                  <button class="rec-btn rec-no" onclick="selRec(this)">❌ No Hire</button>
+                </div>
+                <div style="margin-bottom:14px"><label class="form-label">Interview Notes</label><textarea
+                    class="f-textarea"
+                    placeholder="Share your observations...">Strong portfolio — clean design systems. Confident communicator. Recommended for next round.</textarea>
+                </div>
+                <div id="sc-ai-result"
+                  style="display:none;background:rgba(108,71,255,.06);border:1px solid rgba(108,71,255,.14);border-radius:10px;padding:14px;margin-bottom:14px;font-size:13px;color:var(--text-mid);line-height:1.7">
+                </div>
+                <div id="sc-submitted"
+                  style="display:none;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:14px;margin-bottom:14px;font-size:13px;color:#059669;font-weight:600;text-align:center">
+                  ✅ Scorecard submitted successfully!</div>
+                <div style="display:flex;gap:10px">
+                  <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="submitSC()">🧠 Submit &
+                    Get AI Analysis</button>
+                  <button class="btn btn-outline" onclick="showToast('💾','Draft saved')">Save Draft</button>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Competency Ratings <span class="ctag" id="sc-avg-lbl">Avg: —</span></div>
+              <div id="sc-rows"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL COLLABORATION -->
+        <div class="page" id="page-collab">
+          <div class="page-header">
+            <div class="page-title">🤝 Panel Collaboration</div>
+            <div class="page-sub">Compare skill scores across all panelists for this candidate.</div>
+          </div>
+          <div class="card" style="margin-bottom:20px;padding:18px">
+            <div style="display:flex;align-items:center;gap:14px">
+              <div class="cav cv1" style="width:50px;height:50px;font-size:22px">👩‍💻</div>
+              <div>
+                <div style="font-size:17px;font-weight:700;color:var(--text);font-family:'Fraunces',serif">Sarah Chen
+                </div>
+                <div style="font-size:12px;color:var(--text-mid)">Senior React Developer · Technical Round · Panel of 3
+                </div>
+              </div>
+              <div style="margin-left:auto;display:flex;gap:8px">
+                <span class="sbadge sbv">Technical Round</span>
+                <button class="btn btn-ghost btn-sm" onclick="openResume('sarah')">📄 Resume</button>
+              </div>
+            </div>
+          </div>
+          <div class="grid3" style="margin-bottom:20px">
+            <div class="panelist-card" style="border:2px solid rgba(108,71,255,.2)">
+              <div class="panelist-header">
+                <div class="p-av cv1">👨‍💻</div>
+                <div>
+                  <div style="font-size:13px;font-weight:700;color:var(--text)">Rajesh Kumar <span
+                      style="font-size:11px;color:var(--violet)">(You)</span></div>
+                  <div style="font-size:11px;color:var(--text-lite)">Lead Engineer</div>
+                </div>
+                <span class="chip chip-green" style="margin-left:auto"><span class="chip-dot"></span>Hire</span>
+              </div>
+              <div class="p-scores">
+                <div class="ps-box">
+                  <div class="ps-val">4.5</div>
+                  <div class="ps-lbl">Technical</div>
+                </div>
+                <div class="ps-box">
+                  <div class="ps-val">4.0</div>
+                  <div class="ps-lbl">Comms</div>
+                </div>
+                <div class="ps-box">
+                  <div class="ps-val">4.2</div>
+                  <div class="ps-lbl">Culture</div>
+                </div>
+              </div>
+              <div style="margin-top:12px;font-size:12px;color:var(--text-mid);line-height:1.6;font-style:italic">
+                "Strong fundamentals. Handled edge cases well."</div>
+            </div>
+            <div class="panelist-card">
+              <div class="panelist-header">
+                <div class="p-av cv2">👩‍💼</div>
+                <div>
+                  <div style="font-size:13px;font-weight:700;color:var(--text)">Preethi Sharma</div>
+                  <div style="font-size:11px;color:var(--text-lite)">Senior Engineer</div>
+                </div>
+                <span class="chip chip-green" style="margin-left:auto"><span class="chip-dot"></span>Hire</span>
+              </div>
+              <div class="p-scores">
+                <div class="ps-box">
+                  <div class="ps-val">4.0</div>
+                  <div class="ps-lbl">Technical</div>
+                </div>
+                <div class="ps-box">
+                  <div class="ps-val">4.5</div>
+                  <div class="ps-lbl">Comms</div>
+                </div>
+                <div class="ps-box">
+                  <div class="ps-val">4.8</div>
+                  <div class="ps-lbl">Culture</div>
+                </div>
+              </div>
+              <div style="margin-top:12px;font-size:12px;color:var(--text-mid);line-height:1.6;font-style:italic">
+                "Excellent communicator. Great culture fit."</div>
+            </div>
+            <div class="panelist-card">
+              <div class="panelist-header">
+                <div class="p-av cv3">👨‍🔬</div>
+                <div>
+                  <div style="font-size:13px;font-weight:700;color:var(--text)">Arjun Mehta</div>
+                  <div style="font-size:11px;color:var(--text-lite)">Engineering Manager</div>
+                </div>
+                <span class="chip chip-yellow" style="margin-left:auto"><span class="chip-dot"></span>Maybe</span>
+              </div>
+              <div class="p-scores">
+                <div class="ps-box">
+                  <div class="ps-val">3.5</div>
+                  <div class="ps-lbl">Technical</div>
+                </div>
+                <div class="ps-box">
+                  <div class="ps-val">3.8</div>
+                  <div class="ps-lbl">Comms</div>
+                </div>
+                <div class="ps-box">
+                  <div class="ps-val">4.0</div>
+                  <div class="ps-lbl">Culture</div>
+                </div>
+              </div>
+              <div style="margin-top:12px;font-size:12px;color:var(--text-mid);line-height:1.6;font-style:italic">"Good
+                candidate, needs more system design depth."</div>
+            </div>
+          </div>
+          <div class="grid2">
+            <div class="card">
+              <div class="card-title">Score Comparison</div>
+              <div
+                style="display:grid;grid-template-columns:130px 1fr 1fr 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--table-border);font-size:11px;font-weight:700;color:var(--text-lite);text-transform:uppercase;letter-spacing:.7px">
+                <span></span><span>Rajesh</span><span>Preethi</span><span>Arjun</span></div>
+              <div
+                style="display:grid;grid-template-columns:130px 1fr 1fr 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--table-border);align-items:center">
+                <span style="font-size:13px;font-weight:600;color:var(--text)">Technical</span>
+                <div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:80%"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:80%;animation-delay:.1s"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:60%;animation-delay:.2s"></div>
+                  </div>
+                </div>
+              </div>
+              <div
+                style="display:grid;grid-template-columns:130px 1fr 1fr 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--table-border);align-items:center">
+                <span style="font-size:13px;font-weight:600;color:var(--text)">Communication</span>
+                <div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:80%;animation-delay:.1s"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:100%;animation-delay:.2s"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:76%;animation-delay:.3s"></div>
+                  </div>
+                </div>
+              </div>
+              <div
+                style="display:grid;grid-template-columns:130px 1fr 1fr 1fr;gap:12px;padding:12px 0;align-items:center">
+                <span style="font-size:13px;font-weight:600;color:var(--text)">Culture Fit</span>
+                <div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:84%;animation-delay:.2s"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:100%;animation-delay:.3s"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:80%;animation-delay:.4s"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Panel AI Summary <span class="ctag">Hireon AI</span></div>
+              <div
+                style="background:linear-gradient(135deg,rgba(108,71,255,.06),rgba(255,107,198,.03));border:1px solid rgba(108,71,255,.12);border-radius:12px;padding:16px;font-size:13px;color:var(--text-mid);line-height:1.8">
+                🧠 <strong style="color:var(--violet)">Panel Consensus: Lean Hire</strong><br><br>
+                2 of 3 panelists recommend <strong>Hire</strong>. Strongest alignment on <strong>culture fit</strong>
+                (avg 4.3/5). Main variation is on <strong>technical depth</strong>.<br><br>
+                <strong>Suggested Next Step:</strong> Proceed to HR Round. Optional follow-up on system design if
+                needed.
+              </div>
+              <div style="display:flex;gap:10px;margin-top:16px">
+                <button class="btn btn-primary btn-sm" style="flex:1;justify-content:center"
+                  onclick="showToast('✅','Panel verdict submitted!')">Submit Panel Verdict</button>
+                <button class="btn btn-outline btn-sm"
+                  onclick="showToast('📧','Discussion email sent')">Discuss</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MY ANALYTICS -->
+        <div class="page" id="page-analytics">
+          <div class="page-header">
+            <div class="page-title">📈 My Analytics</div>
+            <div class="page-sub">Track your interview performance and candidate experience ratings.</div>
+          </div>
+          <div class="grid4" style="margin-bottom:22px">
+            <div class="kpi-card">
+              <div class="kpi-top">
+                <div class="kpi-icon ki1">🎙️</div>
+                <div class="kpi-delta up">All time</div>
+              </div>
+              <div class="kpi-val">142</div>
+              <div class="kpi-lbl">Total Interviews</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top">
+                <div class="kpi-icon ki2">⏱️</div>
+                <div class="kpi-delta up">Faster</div>
+              </div>
+              <div class="kpi-val">38m</div>
+              <div class="kpi-lbl">Avg. Duration</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top">
+                <div class="kpi-icon ki3">⭐</div>
+                <div class="kpi-delta up">↑ 0.2</div>
+              </div>
+              <div class="kpi-val">4.6</div>
+              <div class="kpi-lbl">Candidate Rating</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top">
+                <div class="kpi-icon ki4">📊</div>
+                <div class="kpi-delta up">This month</div>
+              </div>
+              <div class="kpi-val">28</div>
+              <div class="kpi-lbl">This Month</div>
+            </div>
+          </div>
+          <div class="grid2" style="margin-bottom:20px">
+            <div class="card">
+              <div class="card-title">Interviews by Round Type</div>
+              <div style="display:flex;flex-direction:column;gap:14px;margin-top:4px">
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span
+                      style="font-weight:600;color:var(--text)">Pre-screening</span><span
+                      style="color:var(--text-mid)">45</span></div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:45%;animation-delay:.1s"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span
+                      style="font-weight:600;color:var(--text)">Technical Round</span><span
+                      style="color:var(--text-mid)">62</span></div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:62%;animation-delay:.2s"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span
+                      style="font-weight:600;color:var(--text)">Practical Round</span><span
+                      style="color:var(--text-mid)">18</span></div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:18%;animation-delay:.3s"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span
+                      style="font-weight:600;color:var(--text)">Culture / HR</span><span
+                      style="color:var(--text-mid)">17</span></div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:17%;animation-delay:.4s"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Candidate Experience Feedback</div>
+              <div style="display:flex;flex-direction:column;gap:14px;margin-top:4px">
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span
+                      style="font-weight:600;color:var(--text)">Clarity of Questions</span><span
+                      style="color:var(--text-mid)">4.7 / 5</span></div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:94%;animation-delay:.1s"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span
+                      style="font-weight:600;color:var(--text)">Respectful Conduct</span><span
+                      style="color:var(--text-mid)">4.9 / 5</span></div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:98%;animation-delay:.2s"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span
+                      style="font-weight:600;color:var(--text)">Time Management</span><span
+                      style="color:var(--text-mid)">4.3 / 5</span></div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:86%;animation-delay:.3s"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span
+                      style="font-weight:600;color:var(--text)">Overall Rating</span><span
+                      style="color:var(--text-mid)">4.6 / 5</span></div>
+                  <div class="prog-bar">
+                    <div class="prog-fill" style="width:92%;animation-delay:.4s"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Recent Interview History</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Candidate</th>
+                  <th>Role</th>
+                  <th>Round</th>
+                  <th>Date</th>
+                  <th>Duration</th>
+                  <th>Your Score</th>
+                  <th>Scorecard</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <div class="cav cv1" style="width:28px;height:28px;font-size:12px">👩‍💻</div>Sarah Chen
+                    </div>
+                  </td>
+                  <td style="color:var(--text-mid)">Sr React Dev</td>
+                  <td><span class="sbadge sbv">Technical</span></td>
+                  <td style="color:var(--text-mid)">Today</td>
+                  <td>42m</td>
+                  <td><span style="color:var(--amber)">★★★★☆</span> 4.4</td>
+                  <td><button class="btn btn-primary btn-xs"
+                      onclick="nav('scorecard',document.querySelector('[onclick*=scorecard]'))">Fill</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <div class="cav cv5" style="width:28px;height:28px;font-size:12px">👩‍🎨</div>Lena Schwartz
+                    </div>
+                  </td>
+                  <td style="color:var(--text-mid)">UI Engineer</td>
+                  <td><span class="sbadge sbp">Portfolio</span></td>
+                  <td style="color:var(--text-mid)">Today 8AM</td>
+                  <td>35m</td>
+                  <td><span style="color:var(--amber)">★★★★☆</span> 4.1</td>
+                  <td><span class="chip chip-green" style="font-size:10px">Submitted</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <div class="cav cv4" style="width:28px;height:28px;font-size:12px">👨‍🔬</div>Omar Farisi
+                    </div>
+                  </td>
+                  <td style="color:var(--text-mid)">Sr React Dev</td>
+                  <td><span class="sbadge sbg">Pre-screen</span></td>
+                  <td style="color:var(--text-mid)">Feb 18</td>
+                  <td>28m</td>
+                  <td><span style="color:var(--amber)">★★★★★</span> 4.8</td>
+                  <td><span class="chip chip-green" style="font-size:10px">Submitted</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <div class="cav cv3" style="width:28px;height:28px;font-size:12px">🧑‍💻</div>Priya Nair
+                    </div>
+                  </td>
+                  <td style="color:var(--text-mid)">Frontend Eng</td>
+                  <td><span class="sbadge sbg">Pre-screen</span></td>
+                  <td style="color:var(--text-mid)">Feb 17</td>
+                  <td>22m</td>
+                  <td><span style="color:var(--amber)">★★★☆☆</span> 2.9</td>
+                  <td><span class="chip chip-green" style="font-size:10px">Submitted</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PREP KIT -->
+        <div class="page" id="page-prepkit">
+          <div class="page-header">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+              <div>
+                <div class="page-title">🗒️ Interview Prep Kit</div>
+                <div class="page-sub">AI-generated questions and checklist — tailored to the role and candidate resume.
+                </div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <select class="form-input" style="width:210px;padding:8px 14px">
+                  <option>Sarah Chen — 9:00 AM</option>
+                  <option>Marcus Reid — 11:30 AM</option>
+                  <option>Omar Farisi — 2:00 PM</option>
+                </select>
+                <button class="btn btn-primary btn-sm"
+                  onclick="nav('liveroom',document.querySelector('[onclick*=liveroom]'));showToast('🟢','Entering Live Room!')">Start
+                  Interview →</button>
+              </div>
+            </div>
+          </div>
+          <div class="grid2">
+            <div>
+              <div class="card" style="margin-bottom:18px">
+                <div class="card-title">Candidate Snapshot</div>
+                <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+                  <div class="cav cv1" style="width:52px;height:52px;font-size:26px">👩‍💻</div>
+                  <div>
+                    <div style="font-size:18px;font-weight:700;color:var(--text);font-family:'Fraunces',serif">Sarah
+                      Chen</div>
+                    <div style="font-size:13px;color:var(--text-mid)">Senior React Developer · Technical Round</div>
+                    <div style="margin-top:7px;display:flex;gap:5px;flex-wrap:wrap"><span
+                        class="spill">React</span><span class="spill">TypeScript</span><span
+                        class="spill">Node.js</span><span class="spill">GraphQL</span></div>
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                  <div class="df">
+                    <div class="df-label">💼 Experience</div>
+                    <div class="df-value">6.5 Years</div>
+                  </div>
+                  <div class="df">
+                    <div class="df-label">🏢 Last Company</div>
+                    <div class="df-value">TechCorp Pvt Ltd</div>
+                  </div>
+                </div>
+                <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:12px"
+                  onclick="openResume('sarah')">📄 View Full Resume</button>
+              </div>
+              <div class="card">
+                <div class="card-title">Pre-Interview Checklist</div>
+                <div>
+                  <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="chk">✓</div><span class="chk-text">Open and review candidate resume</span>
+                  </div>
+                  <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="chk done">✓</div><span class="chk-text"
+                      style="color:var(--text-lite);text-decoration:line-through">Read the JD and key
+                      requirements</span>
+                  </div>
+                  <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="chk">✓</div><span class="chk-text">Open Google Meet link</span>
+                  </div>
+                  <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="chk">✓</div><span class="chk-text">Open scorecard form in second tab</span>
+                  </div>
+                  <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="chk done">✓</div><span class="chk-text"
+                      style="color:var(--text-lite);text-decoration:line-through">Review AI-generated prep
+                      questions</span>
+                  </div>
+                  <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="chk">✓</div><span class="chk-text">Prepare system design whiteboard</span>
+                  </div>
+                  <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="chk">✓</div><span class="chk-text">Block 45 min + 10 min debrief buffer</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="card" style="margin-bottom:18px">
+                <div class="card-title">🤖 AI-Generated Questions <span class="ctag">Role + Resume Based</span></div>
+                <div>
+                  <div class="prep-q">
+                    <div class="prep-q-num">1</div>
+                    <div>
+                      <div class="prep-q-text">Walk me through how you managed state in a large-scale React app. What
+                        tradeoffs did you make between Redux and Context API?</div><span
+                        class="prep-q-cat cat-tech">State Management</span>
+                    </div>
+                  </div>
+                  <div class="prep-q">
+                    <div class="prep-q-num">2</div>
+                    <div>
+                      <div class="prep-q-text">Describe a time TypeScript strictness caught a bug before production.
+                        Walk me through your approach to typing complex data structures.</div><span
+                        class="prep-q-cat cat-tech">TypeScript</span>
+                    </div>
+                  </div>
+                  <div class="prep-q">
+                    <div class="prep-q-num">3</div>
+                    <div>
+                      <div class="prep-q-text">Design a real-time notification system for 100k concurrent users. Walk me
+                        through your architecture decisions.</div><span class="prep-q-cat cat-logic">System
+                        Design</span>
+                    </div>
+                  </div>
+                  <div class="prep-q">
+                    <div class="prep-q-num">4</div>
+                    <div>
+                      <div class="prep-q-text">Can you walk me through specific backend APIs you've shipped end-to-end
+                        using Node.js?</div><span class="prep-q-cat cat-tech">Backend</span>
+                    </div>
+                  </div>
+                  <div class="prep-q">
+                    <div class="prep-q-num">5</div>
+                    <div>
+                      <div class="prep-q-text">Tell me about a time you disagreed with a technical decision. How did you
+                        handle it? What was the outcome?</div><span class="prep-q-cat cat-culture">Culture Fit</span>
+                    </div>
+                  </div>
+                  <div class="prep-q">
+                    <div class="prep-q-num">6</div>
+                    <div>
+                      <div class="prep-q-text">Describe the most complex UI component you've built. What made it hard?
+                        How did you ensure reusability?</div><span class="prep-q-cat cat-tech">Technical Depth</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-title">Skills Overview <span class="ctag green">AI Assessed</span></div>
+                <div style="display:flex;flex-direction:column;gap:12px">
+                  <div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">✅</span>
+                    <div style="flex:1">
+                      <div style="font-size:13px;font-weight:600;color:var(--text)">React · TypeScript · Redux</div>
+                      <div style="font-size:11px;color:var(--text-lite)">Strong portfolio evidence across multiple roles
+                      </div>
+                    </div><span class="chip chip-green">Strong</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">🔵</span>
+                    <div style="flex:1">
+                      <div style="font-size:13px;font-weight:600;color:var(--text)">Node.js · Backend APIs</div>
+                      <div style="font-size:11px;color:var(--text-lite)">Listed in profile — worth exploring in depth
+                      </div>
+                    </div><span class="chip chip-violet">Explore</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">🔵</span>
+                    <div style="flex:1">
+                      <div style="font-size:13px;font-weight:600;color:var(--text)">System Design at Scale</div>
+                      <div style="font-size:11px;color:var(--text-lite)">Good to assess during technical round</div>
+                    </div><span class="chip chip-violet">Assess</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">✅</span>
+                    <div style="flex:1">
+                      <div style="font-size:13px;font-weight:600;color:var(--text)">Communication & Collaboration</div>
+                      <div style="font-size:11px;color:var(--text-lite)">Evident from work history and references</div>
+                    </div><span class="chip chip-green">Strong</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIVE INTERVIEW ROOM -->
+        <div class="page" id="page-liveroom">
+          <div class="page-header" style="margin-bottom:16px">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+              <div>
+                <div class="page-title">🟢 Live Interview Room</div>
+                <div class="page-sub">Focused interview mode — rate, note, and tick off questions in real-time.</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-red btn-sm" onclick="endInterview()">⏹ End Interview</button>
+                <button class="btn btn-ghost btn-sm" onclick="showToast('💾','Notes saved!')">💾 Save Notes</button>
+              </div>
+            </div>
+          </div>
+          <div class="live-layout">
+            <div class="live-main">
+              <div class="live-banner">
+                <div class="live-cname">Sarah Chen</div>
+                <div class="live-cmeta">Senior React Developer · Technical Round · Panel: Rajesh, Preethi, Arjun</div>
+                <div><a href="#"
+                    style="color:rgba(255,255,255,.75);font-size:12px;font-weight:600;text-decoration:none">🎥
+                    meet.google.com/hrn-abc-123</a></div>
+                <div class="live-timer">
+                  <div class="timer-val" id="live-timer-val">00:00</div>
+                  <div class="timer-lbl">Elapsed</div>
+                  <div class="timer-controls">
+                    <button class="timer-btn tbtn-start" id="timer-start-btn" onclick="toggleTimer()">▶ Start</button>
+                    <button class="timer-btn tbtn-end" onclick="endInterview()">⏹ End</button>
+                  </div>
+                </div>
+              </div>
+              <div class="lq-grid">
+                <div class="lq-box" id="lqb-tech">
+                  <div class="lq-label">⚙️ Technical</div>
+                  <div class="lq-stars" id="lqs-tech" onclick="liveRate('tech',event)"><span class="lq-star"
+                      data-v="1">★</span><span class="lq-star" data-v="2">★</span><span class="lq-star"
+                      data-v="3">★</span><span class="lq-star" data-v="4">★</span><span class="lq-star"
+                      data-v="5">★</span></div>
+                </div>
+                <div class="lq-box" id="lqb-comm">
+                  <div class="lq-label">💬 Communication</div>
+                  <div class="lq-stars" id="lqs-comm" onclick="liveRate('comm',event)"><span class="lq-star"
+                      data-v="1">★</span><span class="lq-star" data-v="2">★</span><span class="lq-star"
+                      data-v="3">★</span><span class="lq-star" data-v="4">★</span><span class="lq-star"
+                      data-v="5">★</span></div>
+                </div>
+                <div class="lq-box" id="lqb-cult">
+                  <div class="lq-label">🤝 Culture Fit</div>
+                  <div class="lq-stars" id="lqs-cult" onclick="liveRate('cult',event)"><span class="lq-star"
+                      data-v="1">★</span><span class="lq-star" data-v="2">★</span><span class="lq-star"
+                      data-v="3">★</span><span class="lq-star" data-v="4">★</span><span class="lq-star"
+                      data-v="5">★</span></div>
+                </div>
+                <div class="lq-box" id="lqb-prob">
+                  <div class="lq-label">🧩 Problem Solving</div>
+                  <div class="lq-stars" id="lqs-prob" onclick="liveRate('prob',event)"><span class="lq-star"
+                      data-v="1">★</span><span class="lq-star" data-v="2">★</span><span class="lq-star"
+                      data-v="3">★</span><span class="lq-star" data-v="4">★</span><span class="lq-star"
+                      data-v="5">★</span></div>
+                </div>
+              </div>
+              <div class="live-notes-wrap">
+                <div class="live-notes-label">📝 LIVE NOTES</div>
+                <textarea class="live-notes-area"
+                  placeholder="Type notes as the interview progresses...&#10;&#10;• Key answers from candidate&#10;• Observations about communication&#10;• Follow-up points&#10;• Impressions and highlights"></textarea>
+              </div>
+            </div>
+            <div class="live-side">
+              <div class="card" style="padding:18px;flex-shrink:0">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+                  <div class="cav cv1" style="width:46px;height:46px;font-size:22px">👩‍💻</div>
+                  <div>
+                    <div style="font-size:14px;font-weight:700;color:var(--text)">Sarah Chen</div>
+                    <div style="font-size:11px;color:var(--text-mid)">6.5 yrs · TechCorp Pvt Ltd</div>
+                  </div>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px"><span
+                    class="spill">React</span><span class="spill">TypeScript</span><span
+                    class="spill">Node.js</span><span class="spill">GraphQL</span></div>
+                <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center"
+                  onclick="openResume('sarah')">📄 View Full Resume</button>
+              </div>
+              <div class="card" style="padding:18px">
+                <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">📋 Questions <span
+                    style="font-size:10px;font-weight:500;color:var(--text-lite)">(tap to mark asked)</span></div>
+                <div id="live-qs">
+                  <div class="live-q-item" onclick="markQ(this)">
+                    <div class="live-q-num">1</div>
+                    <div class="live-q-text">State management — Redux vs Context API</div>
+                  </div>
+                  <div class="live-q-item asked" onclick="markQ(this)">
+                    <div class="live-q-num">✓</div>
+                    <div class="live-q-text">TypeScript strictness — real bug example</div>
+                  </div>
+                  <div class="live-q-item" onclick="markQ(this)">
+                    <div class="live-q-num">3</div>
+                    <div class="live-q-text">Design notification system for 100k users</div>
+                  </div>
+                  <div class="live-q-item" onclick="markQ(this)">
+                    <div class="live-q-num">4</div>
+                    <div class="live-q-text">Node.js backend API projects — walk me through one</div>
+                  </div>
+                  <div class="live-q-item" onclick="markQ(this)">
+                    <div class="live-q-num">5</div>
+                    <div class="live-q-text">Technical disagreement story & outcome</div>
+                  </div>
+                  <div class="live-q-item" onclick="markQ(this)">
+                    <div class="live-q-num">6</div>
+                    <div class="live-q-text">Most complex UI component built</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="padding:18px;flex-shrink:0">
+                <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">🎯 Quick Verdict</div>
+                <div class="rec-btns" style="flex-direction:column;gap:7px">
+                  <button class="rec-btn rec-hire" style="width:100%;justify-content:center"
+                    onclick="selRec(this);showToast('✅','Hire noted')">✅ Hire</button>
+                  <button class="rec-btn rec-maybe" style="width:100%;justify-content:center"
+                    onclick="selRec(this);showToast('🤔','Maybe noted')">🤔 Maybe</button>
+                  <button class="rec-btn rec-no" style="width:100%;justify-content:center"
+                    onclick="selRec(this);showToast('❌','No Hire noted')">❌ No Hire</button>
+                </div>
+                <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:10px"
+                  onclick="nav('scorecard',document.querySelector('[onclick*=scorecard]'));showToast('📊','Opening full scorecard')">📊
+                  Full Scorecard</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- RESUME MODAL -->
+  <div class="modal-overlay" id="resume-modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="cav" id="modal-av" style="width:44px;height:44px;font-size:22px"></div>
+          <div>
+            <div style="font-size:18px;font-weight:700;color:var(--text);font-family:'Fraunces',serif" id="modal-name">
+            </div>
+            <div style="font-size:12px;color:var(--text-mid)" id="modal-role"></div>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"><span class="toast-icon" id="toast-icon"></span><span id="toast-msg"></span></div>
+
+  <script>
+    // RESUME DATA
+    const RESUMES = {
+      sarah: {
+        name: 'Sarah Chen', role: 'Senior React Developer', av: 'cv1', emoji: '👩‍💻', exp: '6.5 years', location: 'Bengaluru, Karnataka', email: 's.chen@email.com',
+        skills: ['React', 'TypeScript', 'Node.js', 'GraphQL', 'Redux', 'PostgreSQL', 'Docker', 'Git', 'Jest', 'REST APIs'],
+        jobs: [
+          { company: 'TechCorp Pvt Ltd', title: 'Senior Frontend Engineer', dates: 'Jan 2021 – Present', desc: 'Led frontend architecture for SaaS platform serving 50k+ users. Built reusable component library with Storybook. Mentored 3 junior engineers. Improved LCP by 42%.' },
+          { company: 'Zeta Solutions', title: 'React Developer', dates: 'Jun 2018 – Dec 2020', desc: 'Developed core banking dashboard with React + TypeScript. Implemented real-time notifications using WebSockets. Worked closely with UX team on design system.' },
+          { company: 'StartupX', title: 'Junior Frontend Dev', dates: 'Mar 2017 – May 2018', desc: 'Built landing pages and internal tools using React and vanilla JS. First exposure to TypeScript and unit testing with Jest.' },
+        ],
+        education: [{ degree: 'B.E. Computer Engineering', school: 'VTU, Belagavi', year: '2017' }],
+        summary: 'Experienced frontend engineer with 6.5 years specialising in React and TypeScript. Passionate about building scalable web applications and mentoring teams.'
+      },
+      marcus: {
+        name: 'Marcus Reid', role: 'React Developer', av: 'cv2', emoji: '👨‍💼', exp: '5.2 years', location: 'Pune, Maharashtra', email: 'm.reid@email.com',
+        skills: ['React', 'Redux', 'JavaScript', 'CSS', 'Webpack', 'Jest', 'HTML', 'Git', 'REST APIs'],
+        jobs: [
+          { company: 'Infosys Ltd', title: 'React Developer', dates: 'Feb 2020 – Present', desc: 'Developed e-commerce platform frontend using React and Redux. Built responsive UI components. Collaborated with backend team on REST API integration.' },
+          { company: 'WebCraft Agency', title: 'Frontend Developer', dates: 'Aug 2018 – Jan 2020', desc: 'Created client websites using React and JavaScript. Managed Git workflows and deployments.' },
+        ],
+        education: [{ degree: 'B.Sc. Information Technology', school: 'Pune University', year: '2018' }],
+        summary: 'React developer with 5+ years experience building web applications. Strong in component architecture and state management.'
+      },
+      omar: {
+        name: 'Omar Farisi', role: 'Senior React Developer', av: 'cv4', emoji: '👨‍🔬', exp: '7 years', location: 'Bengaluru, Karnataka', email: 'o.farisi@email.com',
+        skills: ['React', 'GraphQL', 'AWS', 'TypeScript', 'Docker', 'Kubernetes', 'Redis', 'CI/CD', 'Node.js', 'PostgreSQL'],
+        jobs: [
+          { company: 'Amazon India', title: 'Software Development Engineer II', dates: 'Apr 2020 – Present', desc: 'Built high-throughput internal tools for Amazon logistics. Designed GraphQL APIs. Owned full-stack feature delivery end-to-end.' },
+          { company: 'Swiggy', title: 'Senior Frontend Engineer', dates: 'Jan 2018 – Mar 2020', desc: 'Led frontend for Swiggy Access (cloud kitchens dashboard). Built real-time order tracking UI. Managed team of 4 engineers.' },
+          { company: 'Ola Cabs', title: 'Frontend Developer', dates: 'Jul 2016 – Dec 2017', desc: 'Developed driver-partner web dashboard. Integrated maps API and real-time updates.' },
+        ],
+        education: [{ degree: 'B.Tech Computer Science', school: 'NITK Surathkal', year: '2016' }],
+        summary: 'Full-stack leaning senior engineer with 7 years at top tech companies. Strong in React, GraphQL, and cloud-native architecture.'
+      },
+      lena: {
+        name: 'Lena Schwartz', role: 'UI Engineer', av: 'cv5', emoji: '👩‍🎨', exp: '4.8 years', location: 'Bengaluru, Karnataka', email: 'l.schwartz@email.com',
+        skills: ['Figma', 'React', 'CSS', 'Design Systems', 'Storybook', 'Accessibility', 'Tailwind', 'SCSS', 'JavaScript'],
+        jobs: [
+          { company: 'Myntra Designs', title: 'UI Engineer', dates: 'Mar 2021 – Present', desc: "Owned Myntra's internal design system. Built 40+ reusable components in React + Storybook. Worked closely with product designers and accessibility team." },
+          { company: 'Freshworks', title: 'Frontend Developer', dates: 'Jun 2019 – Feb 2021', desc: 'Developed customer-facing UI for Freshdesk. Improved accessibility score from 62 to 91. Collaborated with design team on component standardisation.' },
+        ],
+        education: [{ degree: 'B.Des. Interaction Design', school: 'NID Ahmedabad', year: '2019' }],
+        summary: 'UI engineer specialising in design systems and accessible component development. Background in interaction design gives unique perspective on frontend work.'
+      },
+    };
+
+    function openResume(id) {
+      const r = RESUMES[id]; if (!r) return;
+      const av = document.getElementById('modal-av');
+      av.className = `cav ${r.av}`; av.textContent = r.emoji;
+      document.getElementById('modal-name').textContent = r.name;
+      document.getElementById('modal-role').textContent = r.role + ' · ' + r.exp + ' experience';
+      document.getElementById('modal-body').innerHTML = buildResume(r);
+      document.getElementById('resume-modal').classList.add('open');
+    }
+    function buildResume(r) {
+      const skills = r.skills.map(s => `<span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;background:rgba(108,71,255,.09);color:#6c47ff">${s}</span>`).join('');
+      const jobs = r.jobs.map(j => `
+    <div style="margin-bottom:20px;padding-left:16px;border-left:2px solid rgba(108,71,255,.2)">
+      <div style="font-size:15px;font-weight:700;color:var(--text)">${j.company}</div>
+      <div style="font-size:13px;color:#6c47ff;font-weight:600;margin-top:2px">${j.title}</div>
+      <div style="font-size:11px;color:var(--text-lite);margin-top:2px;margin-bottom:8px">${j.dates}</div>
+      <div style="font-size:13px;color:var(--text-mid);line-height:1.7">${j.desc}</div>
+    </div>`).join('');
+      const edu = r.education.map(e => `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--table-border)">
+      <div><div style="font-size:13px;font-weight:700;color:var(--text)">${e.degree}</div><div style="font-size:12px;color:var(--text-mid);margin-top:2px">${e.school}</div></div>
+      <span style="font-size:12px;color:var(--text-lite)">${e.year}</span>
+    </div>`).join('');
+      return `
+    <div style="padding:20px 24px;border-bottom:1px solid var(--table-border)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#6c47ff;margin-bottom:10px">About</div>
+      <div style="font-size:13px;color:var(--text-mid);line-height:1.75">${r.summary}</div>
+      <div style="margin-top:12px;display:flex;gap:16px;flex-wrap:wrap">
+        <div style="font-size:12px;color:var(--text-mid)">📍 ${r.location}</div>
+        <div style="font-size:12px;color:var(--text-mid)">💼 ${r.exp}</div>
+        <div style="font-size:12px;color:var(--text-mid)">✉️ ${r.email}</div>
+      </div>
+    </div>
+    <div style="padding:20px 24px;border-bottom:1px solid var(--table-border)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#6c47ff;margin-bottom:12px">Skills</div>
+      <div>${skills}</div>
+    </div>
+    <div style="padding:20px 24px;border-bottom:1px solid var(--table-border)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#6c47ff;margin-bottom:16px">Work Experience</div>
+      ${jobs}
+    </div>
+    <div style="padding:20px 24px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#6c47ff;margin-bottom:12px">Education</div>
+      ${edu}
+    </div>`;
+    }
+    function closeModal() { document.getElementById('resume-modal').classList.remove('open'); }
+
+    // SCORECARD
+    const SC_SKILLS = [
+      { id: 'tech', name: 'Technical Knowledge', desc: 'Depth and accuracy of technical answers', weight: '30%' },
+      { id: 'prob', name: 'Problem Solving', desc: 'Structured thinking through complex problems', weight: '25%' },
+      { id: 'comm', name: 'Communication', desc: 'Clarity, listening, and articulation', weight: '20%' },
+      { id: 'cult', name: 'Culture Fit', desc: 'Alignment with team values', weight: '15%' },
+      { id: 'xp', name: 'Relevant Experience', desc: 'Prior work matched to the role', weight: '10%' },
+    ];
+    function buildScorecard() {
+      const el = document.getElementById('sc-rows'); if (!el) return;
+      el.innerHTML = SC_SKILLS.map(s => `
+    <div class="sc-row">
+      <div><div class="sc-name">${s.name}</div><div class="sc-desc">${s.desc}</div></div>
+      <span class="sc-weight">${s.weight}</span>
+      <div class="sc-stars" id="scr-${s.id}" onclick="scStar('${s.id}',event)">
+        ${[1, 2, 3, 4, 5].map(v => `<span class="sc-star" data-v="${v}">★</span>`).join('')}
+      </div>
+    </div>`).join('');
+    }
+    function scStar(id, e) {
+      const v = parseInt(e.target.dataset.v); if (!v) return;
+      document.querySelectorAll(`#scr-${id} .sc-star`).forEach(s => s.classList.toggle('on', parseInt(s.dataset.v) <= v));
+      let t = 0, c = 0;
+      SC_SKILLS.forEach(s => { const n = document.querySelectorAll(`#scr-${s.id} .sc-star.on`).length; if (n) { t += n; c++; } });
+      const lbl = document.getElementById('sc-avg-lbl');
+      if (lbl && c) lbl.textContent = `Avg: ${(t / c).toFixed(1)}/5`;
+    }
+    function selRec(btn) { document.querySelectorAll('.rec-btn').forEach(b => b.classList.remove('sel')); btn.classList.add('sel'); }
+    function submitSC() {
+      const rated = SC_SKILLS.filter(s => document.querySelectorAll(`#scr-${s.id} .sc-star.on`).length > 0);
+      if (rated.length < 2) { showToast('⚠️', 'Please rate at least 2 competencies'); return; }
+      let t = 0; SC_SKILLS.forEach(s => { t += document.querySelectorAll(`#scr-${s.id} .sc-star.on`).length; });
+      const avg = (t / SC_SKILLS.length).toFixed(1);
+      const prob = Math.min(95, 55 + parseFloat(avg) * 8);
+      const res = document.getElementById('sc-ai-result');
+      res.style.display = 'block';
+      res.innerHTML = `<strong style="color:#6c47ff">🧠 AI Analysis Complete</strong><br><br>
+    <strong>Weighted Score:</strong> ${avg}/5 &nbsp;·&nbsp; <strong>Hire Probability:</strong> <strong style="color:#10b981">${prob}%</strong><br>
+    <strong>Recommendation:</strong> ${parseFloat(avg) >= 4 ? 'Strong Hire ✅' : parseFloat(avg) >= 3 ? 'Lean Hire 🤔' : 'No Hire ❌'}<br><br>
+    <em style="color:var(--text-lite)">Hireon AI: Candidate scores above the 80th percentile for this role. Recommend proceeding to the next stage.</em>`;
+      document.getElementById('sc-submitted').style.display = 'block';
+      showToast('✅', 'Scorecard submitted!');
+    }
+
+    // TIMER
+    let timerSecs = 0, timerOn = false, timerInt = null;
+    function toggleTimer() {
+      if (timerOn) { clearInterval(timerInt); timerOn = false; document.getElementById('timer-start-btn').textContent = '▶ Resume'; }
+      else { timerInt = setInterval(() => { timerSecs++; const m = String(Math.floor(timerSecs / 60)).padStart(2, '0'), s = String(timerSecs % 60).padStart(2, '0'); document.getElementById('live-timer-val').textContent = `${m}:${s}`; }, 1000); timerOn = true; document.getElementById('timer-start-btn').textContent = '⏸ Pause'; }
+    }
+    function endInterview() {
+      clearInterval(timerInt); timerOn = false;
+      showToast('⏹', 'Interview ended — opening scorecard...');
+      setTimeout(() => nav('scorecard', document.querySelector('[onclick*=scorecard]')), 1300);
+    }
+    function liveRate(key, e) {
+      const v = parseInt(e.target.dataset.v); if (!v) return;
+      document.querySelectorAll(`#lqs-${key} .lq-star`).forEach(s => s.classList.toggle('on', parseInt(s.dataset.v) <= v));
+      document.getElementById('lqb-' + key).classList.add('rated');
+    }
+    function markQ(el) {
+      el.classList.toggle('asked');
+      let i = 1;
+      document.querySelectorAll('.live-q-item').forEach(q => {
+        const num = q.querySelector('.live-q-num');
+        num.textContent = q.classList.contains('asked') ? '✓' : i++;
+      });
+    }
+    function toggleCheck(el) {
+      const chk = el.querySelector('.chk'), txt = el.querySelector('.chk-text');
+      chk.classList.toggle('done');
+      txt.style.color = chk.classList.contains('done') ? 'var(--text-lite)' : 'var(--text)';
+      txt.style.textDecoration = chk.classList.contains('done') ? 'line-through' : 'none';
+    }
+    // NAV
+    function nav(id, el) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + id).classList.add('active');
+      document.querySelectorAll('.sb-item').forEach(s => s.classList.remove('active'));
+      if (el) el.classList.add('active');
+      document.querySelector('.main').scrollTop = 0;
+      if (id === 'scorecard') buildScorecard();
+    }
+    // THEME
+    function toggleTheme() {
+      const html = document.documentElement, dark = html.getAttribute('data-theme') === 'dark';
+      html.setAttribute('data-theme', dark ? 'light' : 'dark');
+      document.getElementById('theme-btn').textContent = dark ? '🌙' : '☀️';
+      document.getElementById('logo-text').className = 'logo-wordmark ' + (dark ? 'lwl' : 'lwd');
+    }
+    // TOAST
+    function showToast(icon, msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-icon').textContent = icon;
+      document.getElementById('toast-msg').textContent = msg;
+      t.classList.add('show'); clearTimeout(t._t);
+      t._t = setTimeout(() => t.classList.remove('show'), 3500);
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hireon — Hire on Autopilot</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,700;0,900;1,300;1,700&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   DESIGN TOKENS
+============================================ */
+:root {
+  --bg: #f0eeff;
+  --bg2: #ece8ff;
+  --violet: #6c47ff;
+  --violet-mid: #8b6bff;
+  --violet-light: #a98bff;
+  --pink: #ff6bc6;
+  --pink-light: #ff9dd7;
+  --teal: #00d4c8;
+  --teal-light: #5eead4;
+  --amber: #fbbf24;
+  --text: #1a1040;
+  --text-mid: #5a4e7a;
+  --text-light: #9689bb;
+  --white: #ffffff;
+  --glass: rgba(255,255,255,0.72);
+  --glass-light: rgba(255,255,255,0.5);
+  --glass-border: rgba(255,255,255,0.95);
+  --glass-border-soft: rgba(255,255,255,0.6);
+  --shadow-card: 0 8px 40px rgba(108,71,255,0.10);
+  --shadow-hover: 0 20px 60px rgba(108,71,255,0.18);
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 10px;
+}
+
+/* ============================================
+   RESET & BASE
+============================================ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================
+   BACKGROUND BLOBS
+============================================ */
+.blobs {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+}
+.blob1 {
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(139,107,255,0.5), rgba(108,71,255,0.2));
+  top: -250px; right: -200px;
+  animation: driftA 12s ease-in-out infinite alternate;
+}
+.blob2 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(255,107,198,0.4), rgba(255,157,215,0.1));
+  bottom: -150px; left: -200px;
+  animation: driftB 15s ease-in-out infinite alternate;
+}
+.blob3 {
+  width: 450px; height: 450px;
+  background: radial-gradient(circle, rgba(0,212,200,0.35), rgba(94,234,212,0.1));
+  top: 35%; left: 25%;
+  animation: driftC 10s ease-in-out infinite alternate;
+}
+.blob4 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(251,191,36,0.2), transparent);
+  top: 60%; right: 15%;
+  animation: driftA 18s ease-in-out infinite alternate-reverse;
+}
+@keyframes driftA { from{transform:translate(0,0) scale(1)} to{transform:translate(40px,-60px) scale(1.1)} }
+@keyframes driftB { from{transform:translate(0,0) scale(1)} to{transform:translate(-30px,50px) scale(1.05)} }
+@keyframes driftC { from{transform:translate(0,0)} to{transform:translate(60px,-40px)} }
+
+/* ============================================
+   NAV
+============================================ */
+nav {
+  position: fixed;
+  top: 18px; left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 64px);
+  max-width: 1200px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(108,71,255,0.10), 0 1px 0 rgba(255,255,255,0.8) inset;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+/* Logo with orbit animation */
+.nav-logo-orbit {
+  position: relative;
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-logo-orbit-ring {
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 1px dashed rgba(108,71,255,0.4);
+  animation: orbit-spin 5s linear infinite;
+}
+.nav-logo-orbit-ring::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #00d4c8;
+  box-shadow: 0 0 8px rgba(0,212,200,0.9), 0 0 16px rgba(0,212,200,0.5);
+}
+@keyframes orbit-spin { to { transform: rotate(360deg); } }
+.nav-logo-icon {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 14px rgba(108,71,255,0.35);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+.nav-logo-icon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent 60%);
+}
+.nav-logo-icon svg {
+  position: relative;
+  z-index: 1;
+}
+.nav-logo-text {
+  font-size: 20px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+nav ul { list-style: none; display: flex; gap: 4px; }
+nav ul li a {
+  display: block;
+  padding: 8px 16px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-mid);
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+nav ul li a:hover { background: rgba(108,71,255,0.07); color: var(--violet); }
+.nav-actions { display: flex; align-items: center; gap: 8px; }
+.btn-nav-ghost {
+  padding: 9px 18px;
+  background: transparent;
+  border: 1px solid rgba(108,71,255,0.25);
+  border-radius: 10px;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--violet);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-nav-ghost:hover { background: rgba(108,71,255,0.06); }
+.btn-nav-primary {
+  padding: 9px 22px;
+  background: linear-gradient(135deg, var(--violet), var(--violet-mid));
+  border: none;
+  border-radius: 10px;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(108,71,255,0.35);
+  transition: all 0.2s;
+}
+.btn-nav-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(108,71,255,0.45); }
+
+/* ============================================
+   HERO
+============================================ */
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 150px 48px 100px;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--violet);
+  margin-bottom: 32px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(108,71,255,0.08);
+  animation: fadeUp 0.6s ease both;
+}
+.badge-pulse {
+  width: 8px; height: 8px;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(108,71,255,0.2);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 3px rgba(108,71,255,0.2)} 50%{box-shadow:0 0 0 6px rgba(108,71,255,0.1)} }
+
+.hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(56px, 7.5vw, 108px);
+  font-weight: 900;
+  line-height: 1.0;
+  margin-bottom: 28px;
+  max-width: 1000px;
+  animation: fadeUp 0.6s 0.1s ease both;
+  letter-spacing: -2px;
+}
+.hero h1 .grad {
+  background: linear-gradient(135deg, var(--violet) 0%, var(--pink) 50%, var(--teal) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 18px;
+  color: var(--text-mid);
+  line-height: 1.75;
+  max-width: 600px;
+  margin-bottom: 52px;
+  font-weight: 400;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+.hero-ctas {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin-bottom: 20px;
+  animation: fadeUp 0.6s 0.3s ease both;
+}
+.btn-primary {
+  padding: 16px 40px;
+  background: linear-gradient(135deg, var(--violet), var(--violet-mid));
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(108,71,255,0.38);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(108,71,255,0.45); }
+.btn-primary:hover::after { opacity: 1; }
+.btn-glass {
+  padding: 16px 40px;
+  background: var(--glass);
+  color: var(--text);
+  border: 1px solid var(--glass-border-soft);
+  border-radius: var(--radius-sm);
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: all 0.3s;
+}
+.btn-glass:hover { background: white; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(108,71,255,0.08); }
+
+.hero-trust {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-light);
+  animation: fadeUp 0.6s 0.4s ease both;
+  margin-bottom: 80px;
+}
+.trust-avatars { display: flex; }
+.trust-avatars span {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2px solid white;
+  margin-left: -8px;
+  background: linear-gradient(135deg, #a78bfa, #6c47ff);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  box-shadow: 0 2px 8px rgba(108,71,255,0.2);
+}
+.trust-avatars span:nth-child(2) { background: linear-gradient(135deg, #f9a8d4, #ff6bc6); }
+.trust-avatars span:nth-child(3) { background: linear-gradient(135deg, #5eead4, #00d4c8); }
+.trust-avatars span:nth-child(4) { background: linear-gradient(135deg, #fde68a, #fbbf24); }
+.trust-avatars span:first-child { margin-left: 0; }
+
+/* Dashboard */
+.dashboard-outer {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  animation: fadeUp 0.8s 0.5s ease both;
+}
+.dashboard-glow {
+  position: absolute;
+  inset: -60px;
+  background: radial-gradient(ellipse at 50% 40%, rgba(108,71,255,0.18), transparent 65%);
+  pointer-events: none;
+}
+.dashboard {
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(108,71,255,0.14), 0 1px 0 rgba(255,255,255,0.9) inset;
+  position: relative;
+  z-index: 1;
+}
+.db-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  background: rgba(248,245,255,0.9);
+  border-bottom: 1px solid rgba(108,71,255,0.07);
+}
+.db-dots { display: flex; gap: 6px; }
+.db-dot { width: 11px; height: 11px; border-radius: 50%; }
+.dd-r{background:#ff5f57} .dd-y{background:#febc2e} .dd-g{background:#28c840}
+.db-tabs { display: flex; gap: 2px; margin-left: 20px; }
+.db-tab {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.db-tab.active { background: var(--glass); color: var(--violet); box-shadow: 0 2px 8px rgba(108,71,255,0.1); }
+.db-url-bar {
+  flex: 1;
+  background: rgba(108,71,255,0.05);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--text-light);
+  text-align: center;
+  margin: 0 16px;
+}
+
+.db-body {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 460px;
+}
+/* Sidebar */
+.db-sidebar {
+  background: rgba(248,245,255,0.7);
+  border-right: 1px solid rgba(108,71,255,0.07);
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.db-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.db-nav-item:hover { background: rgba(108,71,255,0.06); color: var(--violet); }
+.db-nav-item.active { background: rgba(108,71,255,0.1); color: var(--violet); font-weight: 600; }
+.db-nav-item .icon { font-size: 16px; width: 24px; text-align: center; }
+.db-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-light);
+  padding: 12px 12px 4px;
+}
+
+/* Main content */
+.db-main { padding: 24px; overflow: hidden; }
+.db-top-row {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.db-stat {
+  background: white;
+  border: 1px solid rgba(108,71,255,0.07);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  transition: all 0.3s;
+}
+.db-stat:hover { transform: translateY(-2px); box-shadow: var(--shadow-card); }
+.db-stat-icon { font-size: 20px; margin-bottom: 10px; display: block; }
+.db-stat-num { font-size: 26px; font-weight: 700; color: var(--text); display: block; line-height: 1; }
+.db-stat-lbl { font-size: 11px; color: var(--text-light); margin-top: 4px; font-weight: 500; }
+
+.db-mid-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.db-card {
+  background: white;
+  border: 1px solid rgba(108,71,255,0.07);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.db-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.db-card-tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  background: rgba(108,71,255,0.08);
+  color: var(--violet);
+  border-radius: 20px;
+}
+
+/* Funnel */
+.funnel { display: flex; flex-direction: column; gap: 8px; }
+.funnel-row { display: flex; align-items: center; gap: 10px; }
+.funnel-bar-wrap { flex: 1; height: 10px; background: rgba(108,71,255,0.06); border-radius: 5px; overflow: hidden; }
+.funnel-fill { height: 100%; border-radius: 5px; animation: growW 1.2s ease both; }
+.f1 { background: linear-gradient(90deg, var(--violet), var(--violet-mid)); animation-delay: 0.2s; }
+.f2 { background: linear-gradient(90deg, var(--violet-mid), var(--pink)); animation-delay: 0.4s; }
+.f3 { background: linear-gradient(90deg, var(--pink), var(--pink-light)); animation-delay: 0.6s; }
+.f4 { background: linear-gradient(90deg, var(--teal), var(--teal-light)); animation-delay: 0.8s; }
+@keyframes growW { from{width:0%} }
+.funnel-label { font-size: 11px; color: var(--text-mid); width: 80px; }
+.funnel-val { font-size: 11px; font-weight: 600; color: var(--text); width: 40px; text-align: right; }
+
+/* Recent candidates */
+.cand-list { display: flex; flex-direction: column; gap: 10px; }
+.cand-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s;
+  cursor: pointer;
+}
+.cand-row:hover { background: rgba(108,71,255,0.04); }
+.cand-av {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+.av1 { background: linear-gradient(135deg, #ddd6fe, #a78bfa); }
+.av2 { background: linear-gradient(135deg, #fce7f3, #f9a8d4); }
+.av3 { background: linear-gradient(135deg, #d1fae5, #6ee7b7); }
+.cand-info { flex: 1; }
+.cand-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.cand-role { font-size: 11px; color: var(--text-light); }
+.cand-score {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.cs-high { background: #d1fae5; color: #065f46; }
+.cs-mid { background: #fef3c7; color: #92400e; }
+.cs-new { background: rgba(108,71,255,0.1); color: var(--violet); }
+
+/* Score ring */
+.score-ring-wrap { display: flex; align-items: center; justify-content: center; gap: 24px; padding: 8px 0; }
+.ring-item { text-align: center; }
+.ring-label { font-size: 11px; color: var(--text-light); margin-top: 8px; }
+svg.ring { transform: rotate(-90deg); }
+.ring-bg { fill: none; stroke: rgba(108,71,255,0.08); stroke-width: 8; }
+.ring-fill { fill: none; stroke-width: 8; stroke-linecap: round; animation: ringGrow 1.5s ease both; }
+@keyframes ringGrow { from{stroke-dashoffset:283} }
+.ring-text { fill: var(--text); font-family: 'Sora',sans-serif; font-weight: 700; font-size: 16px; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+
+/* ============================================
+   STATS ROW
+============================================ */
+.stats-section {
+  position: relative;
+  z-index: 1;
+  padding: 80px;
+}
+.stats-inner {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 20px;
+}
+.stat-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 40px 32px;
+  backdrop-filter: blur(20px);
+  text-align: center;
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--violet), var(--pink));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s;
+}
+.stat-card:hover::before { transform: scaleX(1); }
+.stat-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); background: white; }
+.stat-num {
+  font-family: 'Fraunces', serif;
+  font-size: 60px;
+  font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
+  margin-bottom: 12px;
+}
+.stat-label { font-size: 14px; color: var(--text-mid); font-weight: 500; line-height: 1.5; }
+
+/* ============================================
+   HOW IT WORKS
+============================================ */
+.how-section {
+  position: relative;
+  z-index: 1;
+  padding: 100px 80px;
+}
+.section-tag {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--violet);
+  margin-bottom: 16px;
+  display: block;
+}
+.section-title {
+  text-align: center;
+  font-family: 'Fraunces', serif;
+  font-size: clamp(36px, 4.5vw, 60px);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+.section-title .grad {
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.section-sub {
+  text-align: center;
+  font-size: 17px;
+  color: var(--text-mid);
+  max-width: 560px;
+  margin: 0 auto 72px;
+  line-height: 1.7;
+}
+
+.timeline {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--violet), var(--pink), var(--teal));
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+.tl-step {
+  display: flex;
+  gap: 60px;
+  margin-bottom: 60px;
+  align-items: flex-start;
+  position: relative;
+}
+.tl-step:nth-child(even) { flex-direction: row-reverse; }
+.tl-content {
+  flex: 1;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s;
+}
+.tl-content:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); background: white; }
+.tl-spacer { flex: 1; }
+.tl-dot {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 24px;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 0 0 6px var(--bg), 0 4px 16px rgba(108,71,255,0.35);
+  z-index: 2;
+}
+.tl-phase {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--violet);
+  margin-bottom: 10px;
+}
+.tl-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+.tl-desc { font-size: 14px; color: var(--text-mid); line-height: 1.7; margin-bottom: 16px; }
+.tl-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tl-tag {
+  padding: 4px 12px;
+  background: rgba(108,71,255,0.08);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--violet);
+}
+.tl-tag.pink { background: rgba(255,107,198,0.1); color: var(--pink); }
+.tl-tag.teal { background: rgba(0,212,200,0.1); color: var(--teal); }
+
+/* ============================================
+   FEATURES
+============================================ */
+.features-section {
+  position: relative;
+  z-index: 1;
+  padding: 100px 80px;
+}
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+}
+.feat-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  backdrop-filter: blur(16px);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.feat-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 3px;
+  background: linear-gradient(90deg, var(--violet), var(--pink));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s;
+}
+.feat-card:hover::after { transform: scaleX(1); }
+.feat-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); background: white; }
+.feat-icon-wrap {
+  width: 60px; height: 60px;
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  margin-bottom: 24px;
+}
+.fi1 { background: linear-gradient(135deg, rgba(108,71,255,0.12), rgba(139,107,255,0.08)); }
+.fi2 { background: linear-gradient(135deg, rgba(255,107,198,0.12), rgba(255,157,215,0.08)); }
+.fi3 { background: linear-gradient(135deg, rgba(0,212,200,0.12), rgba(94,234,212,0.08)); }
+.fi4 { background: linear-gradient(135deg, rgba(251,191,36,0.12), rgba(253,230,138,0.08)); }
+.fi5 { background: linear-gradient(135deg, rgba(108,71,255,0.12), rgba(0,212,200,0.08)); }
+.fi6 { background: linear-gradient(135deg, rgba(255,107,198,0.12), rgba(0,212,200,0.08)); }
+.feat-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+.feat-desc { font-size: 14px; color: var(--text-mid); line-height: 1.75; margin-bottom: 20px; }
+.feat-bullets { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.feat-bullets li {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 13px; color: var(--text-mid);
+}
+.feat-bullets li::before {
+  content: '✓';
+  color: var(--teal);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ============================================
+   TESTIMONIALS
+============================================ */
+.testimonials-section {
+  position: relative;
+  z-index: 1;
+  padding: 100px 80px;
+}
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+.testi-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+.testi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); background: white; }
+.testi-stars { display: flex; gap: 3px; margin-bottom: 18px; }
+.star { font-size: 16px; }
+.testi-quote {
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  font-style: italic;
+  line-height: 1.65;
+  color: var(--text);
+  flex: 1;
+  margin-bottom: 24px;
+}
+.testi-person { display: flex; align-items: center; gap: 12px; }
+.testi-av {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.ta1 { background: linear-gradient(135deg, #ddd6fe, #a78bfa); }
+.ta2 { background: linear-gradient(135deg, #fce7f3, #f9a8d4); }
+.ta3 { background: linear-gradient(135deg, #d1fae5, #6ee7b7); }
+.ta4 { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+.ta5 { background: linear-gradient(135deg, #e0f2fe, #7dd3fc); }
+.ta6 { background: linear-gradient(135deg, #f3e8ff, #d8b4fe); }
+.testi-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.testi-role { font-size: 12px; color: var(--text-light); }
+.testi-company {
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: rgba(108,71,255,0.08);
+  color: var(--violet);
+  width: fit-content;
+}
+
+/* Featured testimonial */
+.testi-featured {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, rgba(108,71,255,0.08), rgba(255,107,198,0.08));
+  border: 1px solid rgba(108,71,255,0.15);
+  display: flex;
+  gap: 48px;
+  align-items: center;
+}
+.testi-featured .testi-quote {
+  font-size: 22px;
+}
+.testi-featured-meta { flex-shrink: 0; text-align: right; }
+.testi-big-av {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  margin-left: auto;
+  margin-bottom: 12px;
+}
+
+/* ============================================
+   PRICING
+============================================ */
+.pricing-section {
+  position: relative;
+  z-index: 1;
+  padding: 100px 80px;
+}
+.pricing-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 56px;
+}
+.toggle-label { font-size: 14px; font-weight: 500; color: var(--text-mid); }
+.toggle {
+  position: relative;
+  width: 52px; height: 28px;
+  background: linear-gradient(135deg, var(--violet), var(--violet-mid));
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(108,71,255,0.3);
+}
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 26px;
+  width: 22px; height: 22px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  transition: left 0.3s;
+}
+.toggle-save {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  background: linear-gradient(135deg, var(--teal), var(--teal-light));
+  color: white;
+  border-radius: 20px;
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+  align-items: start;
+}
+.price-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 44px 36px;
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s;
+  position: relative;
+}
+.price-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+.price-card.featured {
+  background: linear-gradient(160deg, var(--violet), #9b6dff);
+  border-color: transparent;
+  box-shadow: 0 20px 60px rgba(108,71,255,0.35);
+  transform: scale(1.04);
+}
+.price-card.featured:hover { transform: scale(1.04) translateY(-4px); }
+.price-popular {
+  position: absolute;
+  top: -14px; left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 20px;
+  background: linear-gradient(135deg, var(--pink), var(--pink-light));
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(255,107,198,0.4);
+}
+.price-plan {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--violet);
+  margin-bottom: 16px;
+}
+.price-card.featured .price-plan { color: rgba(255,255,255,0.8); }
+.price-amount {
+  font-family: 'Fraunces', serif;
+  font-size: 60px;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.price-card.featured .price-amount { color: white; }
+.price-amount span { font-size: 22px; font-weight: 600; vertical-align: super; font-family: 'Sora', sans-serif; }
+.price-period { font-size: 14px; color: var(--text-mid); margin-bottom: 28px; }
+.price-card.featured .price-period { color: rgba(255,255,255,0.7); }
+.price-desc { font-size: 14px; color: var(--text-mid); line-height: 1.6; margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid rgba(108,71,255,0.1); }
+.price-card.featured .price-desc { color: rgba(255,255,255,0.8); border-bottom-color: rgba(255,255,255,0.2); }
+.price-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+.price-features li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-mid); }
+.price-card.featured .price-features li { color: rgba(255,255,255,0.85); }
+.price-features li::before { content: '✓'; color: var(--teal); font-weight: 700; flex-shrink: 0; }
+.price-card.featured .price-features li::before { color: var(--teal-light); }
+.btn-plan {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+}
+.btn-plan-outline {
+  background: transparent;
+  border: 1.5px solid rgba(108,71,255,0.3);
+  color: var(--violet);
+}
+.btn-plan-outline:hover { background: rgba(108,71,255,0.07); border-color: var(--violet); transform: translateY(-1px); }
+.btn-plan-white {
+  background: white;
+  color: var(--violet);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+.btn-plan-white:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.2); }
+
+/* ============================================
+   FAQ
+============================================ */
+.faq-section {
+  position: relative;
+  z-index: 1;
+  padding: 100px 80px;
+}
+.faq-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.faq-item {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  transition: all 0.3s;
+}
+.faq-item:hover { box-shadow: var(--shadow-card); }
+.faq-q {
+  padding: 24px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.faq-toggle {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(108,71,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  color: var(--violet);
+  flex-shrink: 0;
+  transition: all 0.3s;
+  line-height: 1;
+}
+.faq-a {
+  padding: 0 28px 24px;
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 1.7;
+  border-top: 1px solid rgba(108,71,255,0.07);
+  padding-top: 16px;
+}
+
+/* ============================================
+   CTA BANNER
+============================================ */
+.cta-section {
+  position: relative;
+  z-index: 1;
+  margin: 0 80px 80px;
+}
+.cta-inner {
+  border-radius: 32px;
+  padding: 100px 80px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--violet) 0%, #9b6dff 40%, var(--pink) 100%);
+  overflow: hidden;
+  position: relative;
+}
+.cta-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% -10%, rgba(255,255,255,0.2), transparent 60%);
+}
+.cta-inner::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; right: -80px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+.cta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 18px;
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 28px;
+  position: relative;
+}
+.cta-inner h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(40px, 5vw, 72px);
+  font-weight: 900;
+  color: white;
+  line-height: 1.05;
+  margin-bottom: 20px;
+  position: relative;
+  letter-spacing: -1.5px;
+}
+.cta-inner p {
+  font-size: 17px;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 48px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  line-height: 1.65;
+}
+.cta-btns { display: flex; gap: 14px; justify-content: center; position: relative; }
+.btn-cta-white {
+  padding: 16px 48px;
+  background: white;
+  color: var(--violet);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  transition: all 0.3s;
+}
+.btn-cta-white:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,0.25); }
+.btn-cta-ghost {
+  padding: 16px 40px;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: var(--radius-sm);
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-cta-ghost:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+
+/* ============================================
+   FOOTER
+============================================ */
+footer {
+  position: relative;
+  z-index: 1;
+  padding: 60px 80px 40px;
+  border-top: 1px solid rgba(108,71,255,0.1);
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 60px;
+}
+.footer-brand .nav-logo { margin-bottom: 16px; text-decoration: none; }
+.footer-brand p { font-size: 14px; color: var(--text-mid); line-height: 1.7; max-width: 240px; }
+.footer-social { display: flex; gap: 10px; margin-top: 20px; }
+.social-btn {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: rgba(108,71,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.social-btn:hover { background: rgba(108,71,255,0.15); transform: translateY(-2px); }
+.footer-col h4 { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-col ul li a { text-decoration: none; font-size: 14px; color: var(--text-mid); transition: color 0.2s; }
+.footer-col ul li a:hover { color: var(--violet); }
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 32px;
+  border-top: 1px solid rgba(108,71,255,0.08);
+}
+.footer-copy { font-size: 13px; color: var(--text-light); }
+.footer-badges { display: flex; gap: 12px; }
+.footer-badge {
+  padding: 5px 12px;
+  background: rgba(108,71,255,0.07);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-mid);
+}
+</style>
+</head>
+<body>
+
+<!-- Background blobs -->
+<div class="blobs">
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+  <div class="blob blob4"></div>
+</div>
+
+<!-- ============ NAV ============ -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-orbit">
+      <div class="nav-logo-orbit-ring"></div>
+      <div class="nav-logo-icon">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="1" y="2" width="3" height="10" rx="1.5" fill="white" opacity="0.95"/>
+          <rect x="10" y="2" width="3" height="10" rx="1.5" fill="white" opacity="0.95"/>
+          <rect x="1" y="5.5" width="12" height="3" rx="1.5" fill="white" opacity="0.95"/>
+        </svg>
+      </div>
+    </div>
+    <span class="nav-logo-text">Hireon</span>
+  </a>
+  <ul>
+    <li><a href="#how">How it Works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#testimonials">Customers</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-nav-ghost">Log in</button>
+    <button class="btn-nav-primary">Start Free →</button>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="badge-pulse"></span>
+    Trusted by 500+ companies worldwide
+  </div>
+
+  <h1>Hire brilliantly.<br><span class="grad">Powered by AI.</span></h1>
+
+  <p class="hero-sub">
+    Hireon puts your entire recruitment on autopilot. 87% match accuracy. 10-second analysis. Zero scheduling stress.
+  </p>
+
+  <div class="hero-ctas">
+    <button class="btn-primary">Start Free Trial</button>
+    <button class="btn-glass">▶ Watch Demo</button>
+  </div>
+
+  <div class="hero-trust">
+    <div class="trust-avatars">
+      <span>👩</span><span>👨</span><span>👩‍💼</span><span>🧑‍💻</span>
+    </div>
+    <span>Join 2,400+ HR professionals already using Hireon</span>
+  </div>
+
+  <!-- Dashboard Preview -->
+  <div class="dashboard-outer">
+    <div class="dashboard-glow"></div>
+    <div class="dashboard">
+      <!-- Top bar -->
+      <div class="db-topbar">
+        <div class="db-dots">
+          <div class="db-dot dd-r"></div>
+          <div class="db-dot dd-y"></div>
+          <div class="db-dot dd-g"></div>
+        </div>
+        <div class="db-tabs">
+          <div class="db-tab active">Dashboard</div>
+          <div class="db-tab">Candidates</div>
+          <div class="db-tab">Analytics</div>
+        </div>
+        <div class="db-url-bar">app.hireon.ai/dashboard</div>
+      </div>
+
+      <!-- Body -->
+      <div class="db-body">
+        <!-- Sidebar -->
+        <div class="db-sidebar">
+          <div class="db-section-label">Main</div>
+          <div class="db-nav-item active"><span class="icon">🏠</span>Dashboard</div>
+          <div class="db-nav-item"><span class="icon">👥</span>Candidates</div>
+          <div class="db-nav-item"><span class="icon">📋</span>Job Roles</div>
+          <div class="db-nav-item"><span class="icon">📅</span>Interviews</div>
+          <div class="db-section-label">Intelligence</div>
+          <div class="db-nav-item"><span class="icon">📊</span>Analytics</div>
+          <div class="db-nav-item"><span class="icon">🧠</span>AI Insights</div>
+          <div class="db-nav-item"><span class="icon">💾</span>Talent DB</div>
+          <div class="db-section-label">Settings</div>
+          <div class="db-nav-item"><span class="icon">⚙️</span>Settings</div>
+          <div class="db-nav-item"><span class="icon">👤</span>Team</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="db-main">
+          <!-- Stats row -->
+          <div class="db-top-row">
+            <div class="db-stat">
+              <span class="db-stat-icon">📥</span>
+              <span class="db-stat-num">1,247</span>
+              <div class="db-stat-lbl">Resumes Processed</div>
+            </div>
+            <div class="db-stat">
+              <span class="db-stat-icon">✅</span>
+              <span class="db-stat-num">342</span>
+              <div class="db-stat-lbl">Auto-Shortlisted</div>
+            </div>
+            <div class="db-stat">
+              <span class="db-stat-icon">📅</span>
+              <span class="db-stat-num">89</span>
+              <div class="db-stat-lbl">Interviews Booked</div>
+            </div>
+            <div class="db-stat">
+              <span class="db-stat-icon">🎉</span>
+              <span class="db-stat-num">24</span>
+              <div class="db-stat-lbl">Hires Made</div>
+            </div>
+          </div>
+
+          <!-- Middle row -->
+          <div class="db-mid-row">
+            <!-- Funnel -->
+            <div class="db-card">
+              <div class="db-card-title">Hiring Funnel <span class="db-card-tag">This Month</span></div>
+              <div class="funnel">
+                <div class="funnel-row">
+                  <span class="funnel-label">Applied</span>
+                  <div class="funnel-bar-wrap"><div class="funnel-fill f1" style="width:100%"></div></div>
+                  <span class="funnel-val">1,247</span>
+                </div>
+                <div class="funnel-row">
+                  <span class="funnel-label">Shortlisted</span>
+                  <div class="funnel-bar-wrap"><div class="funnel-fill f2" style="width:27%"></div></div>
+                  <span class="funnel-val">342</span>
+                </div>
+                <div class="funnel-row">
+                  <span class="funnel-label">Interviewed</span>
+                  <div class="funnel-bar-wrap"><div class="funnel-fill f3" style="width:7%"></div></div>
+                  <span class="funnel-val">89</span>
+                </div>
+                <div class="funnel-row">
+                  <span class="funnel-label">Hired</span>
+                  <div class="funnel-bar-wrap"><div class="funnel-fill f4" style="width:2%"></div></div>
+                  <span class="funnel-val">24</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Candidates -->
+            <div class="db-card">
+              <div class="db-card-title">Recent Candidates <span class="db-card-tag">Live</span></div>
+              <div class="cand-list">
+                <div class="cand-row">
+                  <div class="cand-av av1">👩‍💻</div>
+                  <div class="cand-info">
+                    <div class="cand-name">Sarah Chen</div>
+                    <div class="cand-role">Senior React Dev · 6.5y</div>
+                  </div>
+                  <span class="cand-score cs-high">87%</span>
+                </div>
+                <div class="cand-row">
+                  <div class="cand-av av2">👨‍💼</div>
+                  <div class="cand-info">
+                    <div class="cand-name">Marcus Reid</div>
+                    <div class="cand-role">React Dev · 5.2y</div>
+                  </div>
+                  <span class="cand-score cs-high">81%</span>
+                </div>
+                <div class="cand-row">
+                  <div class="cand-av av3">🧑‍💻</div>
+                  <div class="cand-info">
+                    <div class="cand-name">Priya Nair</div>
+                    <div class="cand-role">Frontend Eng · 4y</div>
+                  </div>
+                  <span class="cand-score cs-new">New</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Score rings row -->
+          <div class="db-card">
+            <div class="db-card-title">Average AI Scores <span class="db-card-tag">All Roles</span></div>
+            <div class="score-ring-wrap">
+              <div class="ring-item">
+                <svg class="ring" width="80" height="80" viewBox="0 0 100 100">
+                  <circle class="ring-bg" cx="50" cy="50" r="42"/>
+                  <circle class="ring-fill" cx="50" cy="50" r="42" stroke="url(#g1)" stroke-dasharray="263.9" stroke-dashoffset="33"/>
+                  <defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6c47ff"/><stop offset="100%" stop-color="#8b6bff"/></linearGradient></defs>
+                  <text class="ring-text" x="50" y="56" text-anchor="middle" transform="rotate(90 50 50)">87%</text>
+                </svg>
+                <div class="ring-label">Match Score</div>
+              </div>
+              <div class="ring-item">
+                <svg class="ring" width="80" height="80" viewBox="0 0 100 100">
+                  <circle class="ring-bg" cx="50" cy="50" r="42"/>
+                  <circle class="ring-fill" cx="50" cy="50" r="42" stroke="url(#g2)" stroke-dasharray="263.9" stroke-dashoffset="47" style="animation-delay:0.3s"/>
+                  <defs><linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#ff6bc6"/><stop offset="100%" stop-color="#ff9dd7"/></linearGradient></defs>
+                  <text class="ring-text" x="50" y="56" text-anchor="middle" transform="rotate(90 50 50)">82%</text>
+                </svg>
+                <div class="ring-label">Hire Probability</div>
+              </div>
+              <div class="ring-item">
+                <svg class="ring" width="80" height="80" viewBox="0 0 100 100">
+                  <circle class="ring-bg" cx="50" cy="50" r="42"/>
+                  <circle class="ring-fill" cx="50" cy="50" r="42" stroke="url(#g3)" stroke-dasharray="263.9" stroke-dashoffset="26" style="animation-delay:0.6s"/>
+                  <defs><linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00d4c8"/><stop offset="100%" stop-color="#5eead4"/></linearGradient></defs>
+                  <text class="ring-text" x="50" y="56" text-anchor="middle" transform="rotate(90 50 50)">90%</text>
+                </svg>
+                <div class="ring-label">Skills Accuracy</div>
+              </div>
+              <div class="ring-item">
+                <svg class="ring" width="80" height="80" viewBox="0 0 100 100">
+                  <circle class="ring-bg" cx="50" cy="50" r="42"/>
+                  <circle class="ring-fill" cx="50" cy="50" r="42" stroke="url(#g4)" stroke-dasharray="263.9" stroke-dashoffset="158" style="animation-delay:0.9s"/>
+                  <defs><linearGradient id="g4" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#fde68a"/></linearGradient></defs>
+                  <text class="ring-text" x="50" y="56" text-anchor="middle" transform="rotate(90 50 50)">40%</text>
+                </svg>
+                <div class="ring-label">Offer Rate</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS ============ -->
+<section class="stats-section">
+  <div class="stats-inner">
+    <div class="stat-card">
+      <span class="stat-num">80%</span>
+      <div class="stat-label">Reduction in resume screening time</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">90%</span>
+      <div class="stat-label">Interview scheduling fully automated</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">60%</span>
+      <div class="stat-label">Faster overall time-to-hire</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">30h</span>
+      <div class="stat-label">HR hours saved every single week</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="how-section" id="how">
+  <span class="section-tag">How It Works</span>
+  <h2 class="section-title">From application to offer,<br><span class="grad">all automated.</span></h2>
+  <p class="section-sub">Four intelligent phases that take a candidate from resume submission to hiring decision — with AI doing the heavy lifting at every step.</p>
+
+  <div class="timeline">
+    <div class="tl-step">
+      <div class="tl-content">
+        <div class="tl-phase">Phase 01 — Intake</div>
+        <div class="tl-title">AI Resume Intelligence</div>
+        <p class="tl-desc">The moment a candidate uploads their resume, Hireon's AI engine kicks in. It parses the document, extracts explicit skills like React, Node.js and TypeScript, and infers hidden skills like Redux, REST APIs, and Docker from context clues. Experience years are calculated precisely and seniority level is determined automatically.</p>
+        <div class="tl-tags">
+          <span class="tl-tag">Skill Extraction</span>
+          <span class="tl-tag">Experience Calc</span>
+          <span class="tl-tag">Seniority Detection</span>
+          <span class="tl-tag teal">~10 seconds</span>
+        </div>
+      </div>
+      <div class="tl-spacer"></div>
+      <div class="tl-dot">🧠</div>
+    </div>
+
+    <div class="tl-step">
+      <div class="tl-spacer"></div>
+      <div class="tl-content">
+        <div class="tl-phase">Phase 02 — Scoring</div>
+        <div class="tl-title">Smart Auto-Shortlisting</div>
+        <p class="tl-desc">Hireon compares each candidate's profile against your requirements and generates a precise match score. If a candidate clears your threshold (e.g. 80%), they're instantly shortlisted, their status is updated, your HR team receives a dashboard notification, and the candidate gets an automated email — all without a single human action.</p>
+        <div class="tl-tags">
+          <span class="tl-tag">Match Scoring</span>
+          <span class="tl-tag">Auto-Shortlist</span>
+          <span class="tl-tag pink">HR Notification</span>
+          <span class="tl-tag teal">Fully Automated</span>
+        </div>
+      </div>
+      <div class="tl-dot">🎯</div>
+    </div>
+
+    <div class="tl-step">
+      <div class="tl-content">
+        <div class="tl-phase">Phase 03 — Scheduling</div>
+        <div class="tl-title">Conflict-Free Scheduling</div>
+        <p class="tl-desc">One click. Hireon cross-references the candidate's availability, the interviewer's calendar, and checks for existing bookings. It selects the optimal slot, generates a Google Meet link, and dispatches calendar invites to everyone involved. What used to take 15 emails and 3 days now takes 30 seconds.</p>
+        <div class="tl-tags">
+          <span class="tl-tag">Slot Matching</span>
+          <span class="tl-tag">Conflict Detection</span>
+          <span class="tl-tag pink">Meet Link</span>
+          <span class="tl-tag teal">30 seconds</span>
+        </div>
+      </div>
+      <div class="tl-spacer"></div>
+      <div class="tl-dot">📅</div>
+    </div>
+
+    <div class="tl-step">
+      <div class="tl-spacer"></div>
+      <div class="tl-content">
+        <div class="tl-phase">Phase 04 — Decision</div>
+        <div class="tl-title">Interview Intelligence & Hiring</div>
+        <p class="tl-desc">Post-interview, the interviewer submits structured feedback. Hireon's AI analyzes it, generates a summary, updates the hire probability score (e.g. 75% → 82%), and surfaces a hiring recommendation to HR. Every decision is data-backed. Every candidate — hired or not — is stored permanently in your searchable talent database for future roles.</p>
+        <div class="tl-tags">
+          <span class="tl-tag">Feedback Analysis</span>
+          <span class="tl-tag">Hire Probability</span>
+          <span class="tl-tag pink">Talent Database</span>
+          <span class="tl-tag teal">AI Recommendation</span>
+        </div>
+      </div>
+      <div class="tl-dot">📊</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="features-section" id="features">
+  <span class="section-tag">Platform Features</span>
+  <h2 class="section-title">Everything your hiring<br><span class="grad">team actually needs.</span></h2>
+  <p class="section-sub">No fluff, no bloat. Every feature in Hireon was built to eliminate a specific friction point in the recruiting process.</p>
+
+  <div class="features-grid">
+    <div class="feat-card">
+      <div class="feat-icon-wrap fi1">🧠</div>
+      <div class="feat-title">AI Resume Intelligence</div>
+      <p class="feat-desc">Parse any resume format in under 10 seconds. Get precise skills, experience years, and match scores automatically.</p>
+      <ul class="feat-bullets">
+        <li>PDF & DOCX parsing, any format</li>
+        <li>Explicit + inferred skill extraction</li>
+        <li>Experience years auto-calculated</li>
+        <li>Seniority level classification</li>
+        <li>87% average match accuracy</li>
+      </ul>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon-wrap fi2">🎯</div>
+      <div class="feat-title">Smart Auto-Shortlisting</div>
+      <p class="feat-desc">Set your thresholds once. Hireon filters automatically — only the best candidates ever reach your desk.</p>
+      <ul class="feat-bullets">
+        <li>Configurable match thresholds per role</li>
+        <li>Instant HR dashboard notifications</li>
+        <li>Automatic candidate status emails</li>
+        <li>Multi-role concurrent processing</li>
+        <li>Zero manual resume filtering</li>
+      </ul>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon-wrap fi3">📅</div>
+      <div class="feat-title">Conflict-Free Scheduling</div>
+      <p class="feat-desc">One-click interview scheduling that prevents double-booking and removes every back-and-forth email.</p>
+      <ul class="feat-bullets">
+        <li>Candidate + interviewer availability sync</li>
+        <li>Automatic conflict detection</li>
+        <li>Google Meet link generation</li>
+        <li>Calendar invites to all parties</li>
+        <li>Reschedule handling built-in</li>
+      </ul>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon-wrap fi4">💬</div>
+      <div class="feat-title">Interview Intelligence</div>
+      <p class="feat-desc">Structure your feedback, remove bias, and continuously improve hiring decisions with AI-powered analysis.</p>
+      <ul class="feat-bullets">
+        <li>Structured feedback forms per role</li>
+        <li>AI-generated interview summaries</li>
+        <li>Hire probability updated after each stage</li>
+        <li>Bias detection across candidates</li>
+        <li>Multi-interviewer score aggregation</li>
+      </ul>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon-wrap fi5">💾</div>
+      <div class="feat-title">Permanent Talent Database</div>
+      <p class="feat-desc">Every candidate you've ever considered is stored, indexed, and searchable — forever. Never lose great talent again.</p>
+      <ul class="feat-bullets">
+        <li>Permanent storage of all profiles</li>
+        <li>Full-text skill & experience search</li>
+        <li>Re-match past candidates to new roles</li>
+        <li>Smart alerts for role-candidate fits</li>
+        <li>Hire in days, not weeks for repeat roles</li>
+      </ul>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon-wrap fi6">📈</div>
+      <div class="feat-title">Predictive Analytics</div>
+      <p class="feat-desc">Understand your pipeline health, spot bottlenecks, and continuously improve your hiring funnel with data.</p>
+      <ul class="feat-bullets">
+        <li>Real-time pipeline funnel visualization</li>
+        <li>Time-to-hire trend tracking</li>
+        <li>Hire probability modeling per role</li>
+        <li>Sourcing channel performance</li>
+        <li>Team workload & efficiency reports</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="testimonials-section" id="testimonials">
+  <span class="section-tag">Customer Stories</span>
+  <h2 class="section-title">Loved by hiring teams<br><span class="grad">everywhere.</span></h2>
+  <p class="section-sub">From scrappy startups to mid-market teams — here's what real HR professionals say about Hireon.</p>
+
+  <div class="testimonials-grid">
+    <!-- Featured -->
+    <div class="testi-card testi-featured">
+      <div style="flex:1">
+        <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        <div class="testi-quote">"We went from spending 3 full days on initial screening to having a qualified shortlist ready by 9 AM the same day applications came in. Hireon didn't just save us time — it completely changed how we think about recruiting."</div>
+        <div class="testi-company" style="margin-top:0">Scaling from 40 → 150 employees in 8 months</div>
+      </div>
+      <div class="testi-featured-meta">
+        <div class="testi-big-av ta1">👩‍💼</div>
+        <div class="testi-name" style="font-size:16px">Jennifer Park</div>
+        <div class="testi-role">VP of People, Fintech startup</div>
+      </div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+      <div class="testi-quote">"The scheduling feature alone saved our team 8 hours per week. No more Calendly back-and-forth. The candidate just picks a time, boom — everyone gets an invite."</div>
+      <div class="testi-person">
+        <div class="testi-av ta2">👨‍💻</div>
+        <div>
+          <div class="testi-name">David Osei</div>
+          <div class="testi-role">Head of Talent, SaaS Co.</div>
+          <div class="testi-company">B2B Software</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+      <div class="testi-quote">"The talent database is a game-changer. We hired 3 people last quarter from candidates we rejected 6 months ago — Hireon reminded us they existed when a perfect role opened."</div>
+      <div class="testi-person">
+        <div class="testi-av ta3">👩</div>
+        <div>
+          <div class="testi-name">Aisha Rahman</div>
+          <div class="testi-role">HR Manager, E-commerce</div>
+          <div class="testi-company">Retail Tech</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+      <div class="testi-quote">"I was skeptical about AI recruiting tools. But Hireon's match scores are genuinely accurate — more accurate than my own quick resume scan. Now I trust the shortlist without double-checking."</div>
+      <div class="testi-person">
+        <div class="testi-av ta4">🧑‍💻</div>
+        <div>
+          <div class="testi-name">Marcus Chen</div>
+          <div class="testi-role">CTO, Dev Agency</div>
+          <div class="testi-company">Engineering</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+      <div class="testi-quote">"We run hiring cycles for 10 different roles simultaneously. Before Hireon, that was chaos. Now it's organized, fast, and our candidates actually comment on how smooth the experience is."</div>
+      <div class="testi-person">
+        <div class="testi-av ta5">👩‍💼</div>
+        <div>
+          <div class="testi-name">Lena Hoffmann</div>
+          <div class="testi-role">People Ops, Scale-up</div>
+          <div class="testi-company">HealthTech</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+      <div class="testi-quote">"The bias detection in interview feedback is something I never knew I needed. It flagged patterns in our scoring that we've now corrected. Our team is more diverse because of it."</div>
+      <div class="testi-person">
+        <div class="testi-av ta6">👨‍💼</div>
+        <div>
+          <div class="testi-name">Omar Tariq</div>
+          <div class="testi-role">Director of HR, Agency</div>
+          <div class="testi-company">Creative Tech</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="pricing-section" id="pricing">
+  <span class="section-tag">Simple Pricing</span>
+  <h2 class="section-title">One plan for every<br><span class="grad">stage of growth.</span></h2>
+  <p class="section-sub">No hidden fees. No per-seat surprises. Start free, upgrade when you're ready.</p>
+
+  <div class="pricing-toggle">
+    <span class="toggle-label">Monthly</span>
+    <div class="toggle"></div>
+    <span class="toggle-label">Annual</span>
+    <span class="toggle-save">Save 30%</span>
+  </div>
+
+  <div class="pricing-grid">
+    <!-- Starter -->
+    <div class="price-card">
+      <div class="price-plan">Starter</div>
+      <div class="price-amount"><span>$</span>49</div>
+      <div class="price-period">per month · up to 5 users</div>
+      <p class="price-desc">Perfect for small teams just starting to modernize their hiring. All the essentials included.</p>
+      <ul class="price-features">
+        <li>Up to 200 resumes/month</li>
+        <li>AI parsing & match scoring</li>
+        <li>Auto-shortlisting</li>
+        <li>1-click scheduling + Meet links</li>
+        <li>Basic analytics dashboard</li>
+        <li>Email support</li>
+      </ul>
+      <button class="btn-plan btn-plan-outline">Get Started Free</button>
+    </div>
+
+    <!-- Growth (featured) -->
+    <div class="price-card featured">
+      <div class="price-popular">Most Popular</div>
+      <div class="price-plan">Growth</div>
+      <div class="price-amount"><span>$</span>129</div>
+      <div class="price-period">per month · up to 20 users</div>
+      <p class="price-desc">The full Hireon experience for growing companies. Everything in Starter, plus deeper AI intelligence.</p>
+      <ul class="price-features">
+        <li>Up to 1,000 resumes/month</li>
+        <li>Advanced AI + hidden skill inference</li>
+        <li>Interview intelligence & feedback AI</li>
+        <li>Hire probability scoring</li>
+        <li>Talent database & re-matching</li>
+        <li>Bias detection reports</li>
+        <li>Priority support + onboarding</li>
+      </ul>
+      <button class="btn-plan btn-plan-white">Start Free Trial</button>
+    </div>
+
+    <!-- Enterprise -->
+    <div class="price-card">
+      <div class="price-plan">Enterprise</div>
+      <div class="price-amount" style="font-size:40px;line-height:1.2">Custom</div>
+      <div class="price-period">tailored pricing · unlimited users</div>
+      <p class="price-desc">For large organizations with complex needs. Custom integrations, SLAs, and dedicated success support.</p>
+      <ul class="price-features">
+        <li>Unlimited resumes</li>
+        <li>ATS & HRIS integrations</li>
+        <li>Custom AI training on your data</li>
+        <li>SSO & advanced security</li>
+        <li>Dedicated success manager</li>
+        <li>99.9% uptime SLA</li>
+        <li>Custom analytics & reporting</li>
+      </ul>
+      <button class="btn-plan btn-plan-outline">Talk to Sales</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="faq-section" id="faq">
+  <span class="section-tag">FAQ</span>
+  <h2 class="section-title">Questions?<br><span class="grad">We've got answers.</span></h2>
+  <p class="section-sub">Everything you need to know before getting started with Hireon.</p>
+
+  <div class="faq-grid">
+    <div class="faq-item">
+      <div class="faq-q">How accurate is the AI match scoring?<div class="faq-toggle">+</div></div>
+      <div class="faq-a">Our AI achieves an average of 87% match accuracy across all roles. It's trained on millions of resume-to-hire outcomes and continuously improves from your team's feedback and hiring decisions.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What resume formats does Hireon support?<div class="faq-toggle">+</div></div>
+      <div class="faq-a">Hireon processes PDF, DOCX, and plain text resumes. We handle everything from standard templates to custom-designed CVs and LinkedIn exports. Parsing typically completes in under 10 seconds.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How does the scheduling work exactly?<div class="faq-toggle">+</div></div>
+      <div class="faq-a">Candidates submit 3–5 available time windows. Hireon cross-references these against your interviewers' calendars (via Google Calendar or Outlook), picks the optimal slot, generates a Meet link, and sends invites to everyone. One click, done.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Is candidate data stored securely?<div class="faq-toggle">+</div></div>
+      <div class="faq-a">Yes. All data is encrypted at rest and in transit. We're GDPR and SOC 2 compliant. Candidates can request data deletion at any time. Enterprise plans include custom data retention policies.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I use Hireon with my existing ATS?<div class="faq-toggle">+</div></div>
+      <div class="faq-a">Hireon integrates with major ATS platforms including Greenhouse, Lever, Workday, and BambooHR on Enterprise plans. Starter and Growth plans can use our API or Zapier integration for custom workflows.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What happens to rejected candidates?<div class="faq-toggle">+</div></div>
+      <div class="faq-a">All candidates are permanently stored in your Talent Database — fully indexed and searchable. When a new role opens that matches a previous candidate's profile, Hireon automatically alerts you. Many customers hire from this pool within months.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-badge">✦ Start hiring smarter today</div>
+    <h2>Your next great hire<br>is already waiting.</h2>
+    <p>Join 2,400+ companies that have transformed their recruitment with Hireon. Free to start. No credit card required.</p>
+    <div class="cta-btns">
+      <button class="btn-cta-white">Start Free Trial →</button>
+      <button class="btn-cta-ghost">Book a Demo</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a class="nav-logo" href="#">
+        <div class="nav-logo-icon">✦</div>
+        <span class="nav-logo-text">Hireon</span>
+      </a>
+      <p>Intelligent hiring for modern teams. From resume to offer letter — all automated.</p>
+      <div class="footer-social">
+        <a class="social-btn" href="#">𝕏</a>
+        <a class="social-btn" href="#">in</a>
+        <a class="social-btn" href="#">▶</a>
+        <a class="social-btn" href="#">★</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <ul>
+        <li><a href="#">Features</a></li>
+        <li><a href="#">How It Works</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Changelog</a></li>
+        <li><a href="#">Roadmap</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Cookie Policy</a></li>
+        <li><a href="#">GDPR</a></li>
+        <li><a href="#">Security</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 Hireon Technologies, Inc. All rights reserved.</span>
+    <div class="footer-badges">
+      <span class="footer-badge">SOC 2 Compliant</span>
+      <span class="footer-badge">GDPR Ready</span>
+      <span class="footer-badge">99.9% Uptime</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

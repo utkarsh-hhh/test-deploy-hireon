@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hireon — Candidate Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#7c3aed;--brand2:#a855f7;--brand3:#c084fc;
+  --teal:#06b6d4;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--pink:#ec4899;
+  --sidebar-w:240px;--top-h:64px;--r:16px;
+}
+[data-theme="light"]{
+  --bg:#faf8ff;--bg2:#f3f0ff;
+  --text:#1e1040;--text-mid:#6b5f8a;--text-lite:#b0a4cc;
+  --surface:#ffffff;--surface2:rgba(255,255,255,0.7);
+  --border:rgba(124,58,237,0.10);--border2:rgba(124,58,237,0.06);
+  --shadow:0 2px 16px rgba(124,58,237,0.08);--shadow-h:0 8px 32px rgba(124,58,237,0.15);
+  --sidebar-bg:#ffffff;--topbar-bg:rgba(255,255,255,0.92);
+  --input-bg:rgba(124,58,237,0.05);--input-border:rgba(124,58,237,0.18);
+  --table-border:rgba(124,58,237,0.08);--table-head:rgba(250,248,255,0.9);
+  --kpi:#ffffff;--activity:rgba(255,255,255,0.6);--blob-op:0.45;
+  --sb-active:rgba(124,58,237,0.10);--sb-hover:rgba(124,58,237,0.05);
+  --modal-bg:#ffffff;
+}
+[data-theme="dark"]{
+  --bg:#0d0720;--bg2:#130a2a;
+  --text:#ede8ff;--text-mid:#9b8ec4;--text-lite:#5c4f80;
+  --surface:rgba(25,12,55,0.88);--surface2:rgba(25,12,55,0.6);
+  --border:rgba(124,58,237,0.20);--border2:rgba(124,58,237,0.10);
+  --shadow:0 2px 16px rgba(0,0,0,0.4);--shadow-h:0 8px 32px rgba(124,58,237,0.25);
+  --sidebar-bg:rgba(13,7,32,0.95);--topbar-bg:rgba(13,7,32,0.95);
+  --input-bg:rgba(124,58,237,0.12);--input-border:rgba(124,58,237,0.28);
+  --table-border:rgba(124,58,237,0.12);--table-head:rgba(18,8,44,0.95);
+  --kpi:rgba(20,8,48,0.95);--activity:rgba(20,8,48,0.7);--blob-op:0.3;
+  --sb-active:rgba(124,58,237,0.20);--sb-hover:rgba(124,58,237,0.10);
+  --modal-bg:#130a2a;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased;transition:background .35s,color .35s}
+
+/* AMBIENT */
+.ambient{position:fixed;inset:0;pointer-events:none;z-index:0}
+.amb-circle{position:absolute;border-radius:50%;filter:blur(100px);opacity:var(--blob-op)}
+.ac1{width:600px;height:600px;background:radial-gradient(circle,rgba(124,58,237,.35),transparent 70%);top:-200px;right:-150px;animation:af1 16s ease-in-out infinite alternate}
+.ac2{width:450px;height:450px;background:radial-gradient(circle,rgba(6,182,212,.28),transparent 70%);bottom:-150px;left:-100px;animation:af2 20s ease-in-out infinite alternate}
+.ac3{width:350px;height:350px;background:radial-gradient(circle,rgba(236,72,153,.22),transparent 70%);top:50%;left:40%;animation:af3 13s ease-in-out infinite alternate}
+@keyframes af1{0%{transform:translate(0,0) scale(1)}100%{transform:translate(20px,-30px) scale(1.05)}}
+@keyframes af2{0%{transform:translate(0,0)}100%{transform:translate(-15px,25px)}}
+@keyframes af3{0%{transform:translate(0,0)}100%{transform:translate(30px,-20px)}}
+[data-theme="dark"] .dot-grid{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(rgba(124,58,237,.18) 1px,transparent 1px);background-size:28px 28px}
+[data-theme="light"] .dot-grid{display:none}
+
+/* APP SHELL */
+.app{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh}
+
+/* TOPBAR */
+.topbar{height:var(--top-h);display:flex;align-items:center;padding:0 24px;background:var(--topbar-bg);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);flex-shrink:0;gap:16px;transition:background .35s}
+.logo-wrap{display:flex;align-items:center;gap:11px;flex-shrink:0}
+.logo-orbit{position:relative;width:38px;height:38px;display:flex;align-items:center;justify-content:center}
+.logo-orbit-ring{position:absolute;inset:-7px;border-radius:50%;border:1px dashed rgba(108,71,255,.4);animation:orbit-spin 5s linear infinite}
+.logo-orbit-ring::after{content:'';position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:7px;height:7px;border-radius:50%;background:#00d4c8;box-shadow:0 0 8px rgba(0,212,200,.9)}
+@keyframes orbit-spin{to{transform:rotate(360deg)}}
+.logo-box{width:38px;height:38px;background:linear-gradient(135deg,var(--brand),var(--pink));border-radius:11px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(108,71,255,.35)}
+.logo-wordmark{font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;letter-spacing:-0.6px}
+.lwl{background:linear-gradient(135deg,var(--brand),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.lwd{background:linear-gradient(135deg,#fff 30%,rgba(255,107,198,.9));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cand-pill{padding:5px 14px;border-radius:20px;background:linear-gradient(135deg,rgba(6,182,212,.12),rgba(6,182,212,.06));border:1px solid rgba(6,182,212,.22);font-size:11px;font-weight:600;color:var(--teal);display:flex;align-items:center;gap:6px;font-family:'Space Grotesk',sans-serif;letter-spacing:.3px}
+.cand-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.tb-toggle{width:36px;height:36px;border-radius:10px;background:var(--input-bg);border:1px solid var(--input-border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s}
+.tb-toggle:hover{background:rgba(124,58,237,.15)}
+.cand-av-wrap{display:flex;align-items:center;gap:10px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:40px;padding:5px 14px 5px 5px;cursor:pointer}
+.cand-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#ec4899);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;font-family:'Space Grotesk',sans-serif;flex-shrink:0}
+.cand-avname{font-size:13px;font-weight:600;color:var(--text)}
+.cand-avsub{font-size:10px;color:var(--text-lite)}
+
+/* BODY */
+.body-wrap{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--sidebar-bg);border-right:1px solid var(--border);padding:18px 12px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;transition:background .35s}
+.sb-sect{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-lite);padding:14px 12px 6px;font-family:'Space Grotesk',sans-serif}
+.sb-item{display:flex;align-items:center;gap:11px;padding:10px 14px;border-radius:12px;font-size:13.5px;font-weight:500;color:var(--text-mid);cursor:pointer;transition:all .2s;user-select:none;font-family:'DM Sans',sans-serif}
+.sb-item:hover{background:var(--sb-hover);color:var(--brand)}
+.sb-item.active{background:var(--sb-active);color:var(--brand);font-weight:700}
+.sb-ico{font-size:17px;width:24px;text-align:center;flex-shrink:0}
+.sb-badge{margin-left:auto;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
+.sb-badge.new{background:linear-gradient(135deg,var(--teal),#22d3ee)}
+.sb-badge.green{background:linear-gradient(135deg,var(--green),#34d399)}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:30px 32px}
+.page{display:none}.page.active{display:block}
+.ph{margin-bottom:28px}
+.pt{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);margin-bottom:6px;letter-spacing:-.3px}
+.ps{font-size:14px;color:var(--text-mid)}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;box-shadow:var(--shadow);transition:box-shadow .3s,background .35s}
+.card:hover{box-shadow:var(--shadow-h)}
+.ctitle{font-size:14px;font-weight:700;color:var(--text);margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-family:'Space Grotesk',sans-serif}
+.ctag{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(124,58,237,.09);color:var(--brand);font-family:'Space Grotesk',sans-serif;letter-spacing:.3px}
+.ctag.teal{background:rgba(6,182,212,.10);color:var(--teal)}.ctag.green{background:rgba(16,185,129,.12);color:var(--green)}.ctag.amber{background:rgba(245,158,11,.10);color:#d97706}.ctag.red{background:rgba(239,68,68,.10);color:var(--red)}.ctag.pink{background:rgba(236,72,153,.10);color:var(--pink)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+
+/* KPI */
+.kpi{background:var(--kpi);border:1px solid var(--table-border);border-radius:var(--r);padding:20px;transition:all .3s}
+.kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow-h)}
+.kpi-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.kpi-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px}
+.ki1{background:linear-gradient(135deg,rgba(124,58,237,.14),rgba(168,85,247,.06))}.ki2{background:linear-gradient(135deg,rgba(6,182,212,.14),rgba(34,211,238,.06))}.ki3{background:linear-gradient(135deg,rgba(16,185,129,.14),rgba(52,211,153,.06))}.ki4{background:linear-gradient(135deg,rgba(245,158,11,.14),rgba(253,211,77,.06))}.ki5{background:linear-gradient(135deg,rgba(236,72,153,.14),rgba(244,114,182,.06))}
+.kpi-delta{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;font-family:'Space Grotesk',sans-serif}
+.kd-up{background:rgba(16,185,129,.12);color:var(--green)}.kd-neu{background:rgba(124,58,237,.09);color:var(--brand)}.kd-amber{background:rgba(245,158,11,.10);color:#d97706}
+.kpi-val{font-family:'DM Serif Display',serif;font-size:36px;font-weight:400;line-height:1;color:var(--text);margin-bottom:4px}
+.kpi-lbl{font-size:12px;color:var(--text-lite);font-weight:500;font-family:'Space Grotesk',sans-serif}
+
+/* BUTTONS */
+.btn{padding:9px 18px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:7px}
+.btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 4px 14px rgba(124,58,237,.3)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.4)}
+.btn-outline{background:transparent;color:var(--brand);border:1.5px solid rgba(124,58,237,.3)}
+.btn-outline:hover{background:rgba(124,58,237,.07)}
+.btn-ghost{background:rgba(124,58,237,.08);color:var(--brand)}
+.btn-ghost:hover{background:rgba(124,58,237,.15)}
+.btn-teal{background:rgba(6,182,212,.10);color:var(--teal);border:1.5px solid rgba(6,182,212,.25)}
+.btn-teal:hover{background:rgba(6,182,212,.2)}
+.btn-green{background:rgba(16,185,129,.10);color:var(--green);border:1.5px solid rgba(16,185,129,.25)}
+.btn-green:hover{background:rgba(16,185,129,.2)}
+.btn-red{background:rgba(239,68,68,.08);color:var(--red);border:1.5px solid rgba(239,68,68,.2)}
+.btn-red:hover{background:rgba(239,68,68,.15)}
+.btn-sm{padding:6px 13px;font-size:12px;border-radius:9px}
+.btn-xs{padding:4px 10px;font-size:11px;border-radius:7px}
+
+/* CHIPS */
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;font-size:11px;font-weight:600;font-family:'Space Grotesk',sans-serif}
+.chd{width:5px;height:5px;border-radius:50%;background:currentColor}
+.chip-green{background:rgba(16,185,129,.13);color:#059669}
+.chip-teal{background:rgba(6,182,212,.12);color:var(--teal)}
+.chip-violet{background:rgba(124,58,237,.10);color:var(--brand)}
+.chip-amber{background:rgba(245,158,11,.12);color:#d97706}
+.chip-red{background:rgba(239,68,68,.10);color:var(--red)}
+.chip-gray{background:rgba(107,114,128,.10);color:#6b7280}
+.chip-pink{background:rgba(236,72,153,.12);color:var(--pink)}
+
+/* FORM */
+.flabel{font-size:11px;font-weight:700;color:var(--text-mid);margin-bottom:6px;display:block;letter-spacing:.6px;text-transform:uppercase;font-family:'Space Grotesk',sans-serif}
+.finput{width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid var(--input-border);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--kpi);outline:none;transition:border .2s}
+.finput:focus{border-color:var(--brand)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.ftarea{width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid var(--input-border);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--kpi);resize:vertical;min-height:90px;outline:none;transition:border .2s;line-height:1.65}
+.ftarea:focus{border-color:var(--brand)}
+
+/* PROGRESS */
+.pbar{height:8px;background:rgba(124,58,237,.08);border-radius:4px;overflow:hidden}
+.pfill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--brand),var(--brand2));animation:pw 1.4s ease both}
+@keyframes pw{from{width:0%}}
+
+/* ACTIVITY */
+.aitem{display:flex;align-items:center;gap:12px;padding:13px;border-radius:12px;background:var(--activity);border:1px solid var(--table-border);transition:background .2s}
+.aitem:hover{background:var(--kpi)}
+.aico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.atxt{flex:1}.atitle{font-size:13px;font-weight:600;color:var(--text)}.asub{font-size:11px;color:var(--text-lite);margin-top:2px}.atime{font-size:11px;color:var(--text-lite);flex-shrink:0}
+
+/* ══════════════════════════════
+   1. APPLICATION JOURNEY / TRACKER
+══════════════════════════════ */
+.tracker-wrap{position:relative;padding:32px 0 24px}
+.tracker-line{position:absolute;top:52px;left:10%;right:10%;height:3px;background:var(--border2);border-radius:2px;z-index:0}
+.tracker-progress{position:absolute;top:52px;left:10%;height:3px;background:linear-gradient(90deg,var(--brand),var(--brand2),var(--teal));border-radius:2px;z-index:1;transition:width 1.2s ease}
+.tracker-steps{display:flex;justify-content:space-between;padding:0 10%;position:relative;z-index:2}
+.tstep{display:flex;flex-direction:column;align-items:center;gap:10px;flex:1}
+.tstep-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid var(--border2);background:var(--surface);transition:all .4s;position:relative}
+.tstep.done .tstep-dot{background:linear-gradient(135deg,var(--brand),var(--brand2));border-color:var(--brand2);color:#fff;box-shadow:0 0 0 6px rgba(124,58,237,.12)}
+.tstep.active .tstep-dot{background:linear-gradient(135deg,var(--teal),#22d3ee);border-color:var(--teal);color:#fff;box-shadow:0 0 0 6px rgba(6,182,212,.15);animation:pulse-ring 2s infinite}
+@keyframes pulse-ring{0%,100%{box-shadow:0 0 0 6px rgba(6,182,212,.15)}50%{box-shadow:0 0 0 10px rgba(6,182,212,.06)}}
+.tstep.pending .tstep-dot{background:var(--surface2);border-color:var(--border2);color:var(--text-lite)}
+.tstep-label{font-size:12px;font-weight:700;color:var(--text-mid);text-align:center;font-family:'Space Grotesk',sans-serif}
+.tstep.done .tstep-label{color:var(--brand)}
+.tstep.active .tstep-label{color:var(--teal)}
+.tstep-date{font-size:10px;color:var(--text-lite);text-align:center}
+.tstep-note{font-size:10px;color:var(--text-lite);text-align:center;max-width:90px}
+.stage-detail-card{background:linear-gradient(135deg,rgba(6,182,212,.07),rgba(6,182,212,.03));border:1.5px solid rgba(6,182,212,.2);border-radius:14px;padding:20px;margin-top:8px}
+.stage-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:4px;font-family:'Space Grotesk',sans-serif}
+.stage-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:4px}
+.stage-sub{font-size:13px;color:var(--text-mid);line-height:1.65}
+
+/* Round history list */
+.rh-item{display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--table-border)}
+.rh-item:last-child{border-bottom:none}
+.rh-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.rhd-done{background:var(--green)}.rhd-active{background:var(--teal);animation:blink 2s infinite}.rhd-pend{background:var(--border2)}
+.rh-name{font-size:13px;font-weight:600;color:var(--text);flex:1}
+.rh-date{font-size:12px;color:var(--text-lite)}
+.rh-status{font-size:11px;font-weight:700}
+
+/* ══════════════════════════════
+   2. INTERVIEW SCHEDULE
+══════════════════════════════ */
+.int-card{background:var(--kpi);border:1px solid var(--table-border);border-radius:14px;padding:20px;display:flex;align-items:flex-start;gap:18px;transition:all .3s;position:relative;overflow:hidden}
+.int-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px}
+.ic-live::before{background:linear-gradient(180deg,var(--teal),#22d3ee)}.ic-up::before{background:linear-gradient(180deg,var(--brand),var(--brand2))}.ic-done::before{background:rgba(107,114,128,.3)}
+.int-card:hover{box-shadow:var(--shadow-h);transform:translateY(-2px)}
+.int-time{min-width:64px;flex-shrink:0;text-align:center}
+.int-hr{font-family:'DM Serif Display',serif;font-size:24px;color:var(--brand);line-height:1}
+.int-ampm{font-size:10px;color:var(--text-lite);font-weight:600}
+.int-dt{font-size:10px;color:var(--text-lite);margin-top:3px}
+.int-info{flex:1}
+.int-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px}
+.int-round{font-size:12px;color:var(--text-mid);margin-bottom:8px}
+.int-meta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+.int-meta-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-mid)}
+.int-link{font-size:12px;font-weight:700;color:var(--teal);display:flex;align-items:center;gap:5px}
+.int-link a{color:inherit;text-decoration:none}.int-link a:hover{text-decoration:underline}
+.int-actions{display:flex;flex-direction:column;gap:7px;flex-shrink:0;align-items:flex-end}
+
+/* PREPARE CARD */
+.prep-tip{background:var(--kpi);border:1px solid var(--table-border);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;transition:background .2s}
+.prep-tip:hover{background:var(--activity)}
+.prep-tip-ico{width:28px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.prep-tip-text{font-size:13px;color:var(--text);line-height:1.65;font-weight:500}
+.prep-tip-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:6px;font-family:'Space Grotesk',sans-serif}
+.ptt-v{background:rgba(124,58,237,.09);color:var(--brand)}.ptt-t{background:rgba(6,182,212,.09);color:var(--teal)}.ptt-c{background:rgba(16,185,129,.09);color:var(--green)}.ptt-w{background:rgba(245,158,11,.09);color:#d97706}
+
+/* ══════════════════════════════
+   3. PROFILE & RESUME
+══════════════════════════════ */
+.prof-av-big{width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--pink));display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700;color:#fff;font-family:'DM Serif Display',serif;flex-shrink:0;box-shadow:0 8px 24px rgba(124,58,237,.25);position:relative}
+.prof-av-big::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:2px dashed rgba(124,58,237,.3);animation:spin-slow 10s linear infinite}
+@keyframes spin-slow{to{transform:rotate(360deg)}}
+.compl-ring{width:72px;height:72px;flex-shrink:0}
+.skill-tag{display:inline-block;padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;background:rgba(124,58,237,.09);color:var(--brand);cursor:default;transition:background .2s}
+.skill-tag:hover{background:rgba(124,58,237,.16)}
+.skill-tag.add{background:rgba(124,58,237,.05);color:var(--text-lite);border:1.5px dashed var(--input-border);cursor:pointer}
+.skill-tag.add:hover{color:var(--brand);border-color:var(--brand)}
+
+/* upload zone */
+.upload-zone{border:2px dashed var(--input-border);border-radius:14px;padding:32px;text-align:center;cursor:pointer;transition:all .25s;background:var(--input-bg)}
+.upload-zone:hover{border-color:var(--brand);background:rgba(124,58,237,.07)}
+.upload-zone-ico{font-size:40px;margin-bottom:12px}
+.upload-zone-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.upload-zone-sub{font-size:12px;color:var(--text-lite)}
+
+/* ══════════════════════════════
+   4. NOTIFICATIONS
+══════════════════════════════ */
+.notif-item{display:flex;align-items:flex-start;gap:14px;padding:16px;border-radius:14px;border:1px solid var(--table-border);background:var(--kpi);transition:all .2s;cursor:pointer;position:relative}
+.notif-item:hover{box-shadow:var(--shadow-h);transform:translateX(3px)}
+.notif-item.unread{border-color:rgba(124,58,237,.18);background:linear-gradient(135deg,rgba(124,58,237,.04),rgba(124,58,237,.01))}
+.notif-item.unread::before{content:'';position:absolute;left:-1px;top:50%;transform:translateY(-50%);width:3px;height:60%;background:linear-gradient(180deg,var(--brand),var(--brand2));border-radius:3px}
+.notif-ico{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.notif-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+.notif-sub{font-size:12px;color:var(--text-mid);line-height:1.6}
+.notif-time{font-size:11px;color:var(--text-lite);white-space:nowrap;flex-shrink:0}
+.notif-unread-dot{width:8px;height:8px;border-radius:50%;background:var(--brand);flex-shrink:0;margin-top:3px}
+
+/* ══════════════════════════════
+   5. PREP HUB
+══════════════════════════════ */
+.ph-topic{background:var(--kpi);border:1px solid var(--table-border);border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.ph-topic:hover{border-color:var(--brand);background:rgba(124,58,237,.03)}
+.ph-topic-head{display:flex;align-items:center;gap:10px}
+.ph-topic-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ph-topic-name{font-size:13px;font-weight:700;color:var(--text);flex:1}
+.ph-topic-pct{font-size:12px;font-weight:700;color:var(--brand)}
+.ph-topic-bar{margin-top:8px}
+
+.flashcard{background:linear-gradient(135deg,var(--brand),var(--brand2),var(--pink));border-radius:16px;padding:28px;color:#fff;min-height:140px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;cursor:pointer;transition:transform .2s}
+.flashcard:hover{transform:scale(1.01)}
+.flashcard::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.07)}
+.flashcard-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:.75;font-family:'Space Grotesk',sans-serif}
+.flashcard-q{font-family:'DM Serif Display',serif;font-size:18px;line-height:1.5;margin:10px 0}
+.flashcard-hint{font-size:11px;opacity:.65}
+
+/* ══════════════════════════════
+   6. OFFER & DOCS
+══════════════════════════════ */
+.offer-banner{background:linear-gradient(135deg,#1a0050,#2d0080,#7c3aed,#a855f7);border-radius:var(--r);padding:28px 32px;color:#fff;position:relative;overflow:hidden;margin-bottom:20px}
+.offer-banner::before{content:'🎉';font-size:100px;position:absolute;right:-10px;top:-20px;opacity:.12}
+.offer-banner::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 85% 50%,rgba(255,255,255,.08),transparent)}
+.ob-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:.75;font-family:'Space Grotesk',sans-serif;margin-bottom:8px}
+.ob-title{font-family:'DM Serif Display',serif;font-size:26px;margin-bottom:4px}
+.ob-sub{font-size:13px;opacity:.8;margin-bottom:20px}
+.ob-actions{display:flex;gap:10px;flex-wrap:wrap}
+.ob-btn{padding:10px 22px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .2s}
+.ob-accept{background:#fff;color:var(--brand)}.ob-accept:hover{background:rgba(255,255,255,.9);transform:translateY(-1px)}
+.ob-negotiate{background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.35)}.ob-negotiate:hover{background:rgba(255,255,255,.25)}
+.ob-decline{background:rgba(239,68,68,.3);color:#fff;border:1.5px solid rgba(239,68,68,.4)}.ob-decline:hover{background:rgba(239,68,68,.45)}
+
+.ctc-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--table-border)}
+.ctc-row:last-child{border-bottom:none}
+.ctc-label{font-size:13px;color:var(--text-mid)}
+.ctc-val{font-size:14px;font-weight:700;color:var(--text)}
+.ctc-row.total{background:linear-gradient(135deg,rgba(124,58,237,.07),rgba(124,58,237,.03));margin:8px -8px -8px;padding:14px 8px;border-radius:0 0 12px 12px;border-bottom:none}
+.ctc-row.total .ctc-label{font-weight:700;color:var(--brand)}.ctc-row.total .ctc-val{font-family:'DM Serif Display',serif;font-size:20px;color:var(--brand)}
+
+.doc-item{display:flex;align-items:center;gap:14px;padding:14px;border-radius:12px;background:var(--kpi);border:1px solid var(--table-border);transition:all .2s;cursor:pointer}
+.doc-item:hover{box-shadow:var(--shadow-h);transform:translateY(-1px)}
+.doc-ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.doc-name{font-size:13px;font-weight:700;color:var(--text);flex:1}
+.doc-req{font-size:11px;color:var(--text-lite);margin-top:2px}
+.doc-status-icon{font-size:20px;flex-shrink:0}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse}
+thead th{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-lite);padding:10px 16px;text-align:left;background:var(--table-head);border-bottom:1px solid var(--table-border);font-family:'Space Grotesk',sans-serif}
+tbody td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--table-border);vertical-align:middle;color:var(--text)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(124,58,237,.025)}
+
+/* JOB CARDS */
+.job-card{background:var(--kpi);border:1px solid var(--table-border);border-radius:14px;padding:20px;transition:all .3s}
+.job-card:hover{box-shadow:var(--shadow-h);transform:translateY(-2px);border-color:rgba(124,58,237,.18)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow-h);font-size:13px;font-weight:600;color:var(--text);z-index:1000;transform:translateX(130%);transition:transform .4s cubic-bezier(.16,1,.3,1);max-width:320px}
+.toast.show{transform:translateX(0)}
+.toast-ico{font-size:19px;flex-shrink:0}
+
+/* MODAL */
+.moverlay{position:fixed;inset:0;background:rgba(13,7,32,.55);backdrop-filter:blur(10px);z-index:700;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.moverlay.open{opacity:1;pointer-events:all}
+.mbox{background:var(--modal-bg);border-radius:22px;width:520px;max-width:96vw;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.3);border:1px solid var(--border);transform:translateY(20px);transition:transform .32s,background .35s}
+.moverlay.open .mbox{transform:translateY(0)}
+.mhead{padding:22px 24px;border-bottom:1px solid var(--table-border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.mclose{width:32px;height:32px;border-radius:9px;background:var(--input-bg);border:1px solid var(--input-border);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--text-mid);transition:background .2s}
+.mclose:hover{background:rgba(239,68,68,.1);color:var(--red)}
+.mbody{overflow-y:auto;flex:1;padding:24px}
+</style>
+</head>
+<body>
+<div class="ambient"><div class="amb-circle ac1"></div><div class="amb-circle ac2"></div><div class="amb-circle ac3"></div></div>
+<div class="dot-grid"></div>
+<div class="app">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo-wrap">
+    <div class="logo-orbit"><div class="logo-orbit-ring"></div>
+      <div class="logo-box"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="2" y="3" width="4" height="16" rx="2" fill="white" opacity="0.95"/><rect x="16" y="3" width="4" height="16" rx="2" fill="white" opacity="0.95"/><rect x="2" y="9" width="18" height="4" rx="2" fill="white" opacity="0.95"/><path d="M16 5 L20 1 M18.2 1 L20 1 L20 2.8" stroke="rgba(0,212,200,1)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+    <span class="logo-wordmark lwl" id="logo-text">Hireon</span>
+  </div>
+  <div class="cand-pill"><span class="cand-dot"></span>Candidate Portal</div>
+  <div class="topbar-right">
+    <button class="tb-toggle" onclick="toggleTheme()" id="theme-btn">🌙</button>
+    <div class="cand-av-wrap">
+      <div class="cand-av">P</div>
+      <div><div class="cand-avname">Priya Sharma</div><div class="cand-avsub">Applied — Sr React Dev</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="body-wrap">
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-sect">My Application</div>
+  <div class="sb-item active" onclick="nav('journey',this)"><span class="sb-ico">🗺️</span>Application Journey</div>
+  <div class="sb-item" onclick="nav('schedule',this)"><span class="sb-ico">📅</span>My Interviews<span class="sb-badge new">1 Today</span></div>
+  <div class="sb-item" onclick="nav('profile',this)"><span class="sb-ico">👤</span>My Profile & Resume</div>
+  <div class="sb-item" onclick="nav('notifications',this)"><span class="sb-ico">🔔</span>Notifications<span class="sb-badge">3</span></div>
+  <div class="sb-item" onclick="nav('prep',this)"><span class="sb-ico">🎯</span>Interview Prep Hub</div>
+  <div class="sb-item" onclick="nav('openings',this)"><span class="sb-ico">🏢</span>Current Openings<span class="sb-badge new">12</span></div>
+  <div class="sb-item" onclick="nav('offer',this)" id="sb-offer" style="opacity:0.5;cursor:not-allowed" title="Available after Final Round"><span class="sb-ico">📄</span>Offer & Documents<span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(107,114,128,.12);color:#9ca3af">🔒</span></div>
+  <div style="margin-top:auto;padding:16px 10px 4px">
+    <div style="background:linear-gradient(135deg,rgba(124,58,237,.09),rgba(236,72,153,.05));border:1px solid rgba(124,58,237,.14);border-radius:14px;padding:16px;text-align:center">
+      <div style="font-size:26px;margin-bottom:8px">🚀</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);font-family:'Space Grotesk',sans-serif">You're doing great!</div>
+      <div style="font-size:11px;color:var(--text-lite);margin-top:4px;line-height:1.6">Round 2 is coming up — check your prep kit to get ready.</div>
+      <button class="btn btn-primary btn-sm" style="margin-top:12px;width:100%;justify-content:center" onclick="nav('prep',document.querySelector('[onclick*=prep]'))">Open Prep Hub</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="main">
+
+<!-- ══ 1. APPLICATION JOURNEY ══ -->
+<div class="page active" id="page-journey">
+  <div class="ph">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <div class="pt">Your Application Journey 🗺️</div>
+        <div class="ps">Applying for <strong>Senior React Developer</strong> at Hireon · Applied Feb 3, 2026</div>
+      </div>
+      <span class="chip chip-teal"><span class="chd"></span>Round 2 — In Progress</span>
+    </div>
+  </div>
+
+  <!-- Tracker -->
+  <div class="card" style="margin-bottom:20px;overflow:hidden">
+    <div class="ctitle">Stage Progress <span class="ctag teal">Step 4 of 7</span></div>
+    <div class="tracker-wrap">
+      <div class="tracker-line"></div>
+      <div class="tracker-progress" id="tracker-prog" style="width:50%"></div>
+      <div class="tracker-steps">
+        <div class="tstep done">
+          <div class="tstep-dot">✓</div>
+          <div class="tstep-label">Applied</div>
+          <div class="tstep-date">Feb 3</div>
+        </div>
+        <div class="tstep done">
+          <div class="tstep-dot">✓</div>
+          <div class="tstep-label">Shortlisted</div>
+          <div class="tstep-date">Feb 7</div>
+        </div>
+        <div class="tstep done">
+          <div class="tstep-dot">✓</div>
+          <div class="tstep-label">Round 1</div>
+          <div class="tstep-date">Feb 12</div>
+        </div>
+        <div class="tstep active">
+          <div class="tstep-dot">●</div>
+          <div class="tstep-label">Round 2</div>
+          <div class="tstep-date">Feb 19</div>
+        </div>
+        <div class="tstep pending">
+          <div class="tstep-dot">○</div>
+          <div class="tstep-label">Round 3</div>
+          <div class="tstep-note">Pending</div>
+        </div>
+        <div class="tstep pending">
+          <div class="tstep-dot">○</div>
+          <div class="tstep-label">HR Round</div>
+          <div class="tstep-note">Pending</div>
+        </div>
+        <div class="tstep pending">
+          <div class="tstep-dot">○</div>
+          <div class="tstep-label">Offer</div>
+          <div class="tstep-note">Pending</div>
+        </div>
+      </div>
+    </div>
+    <div class="stage-detail-card">
+      <div class="stage-label">Current Stage</div>
+      <div class="stage-title">Round 2 — Technical Interview</div>
+      <div class="stage-sub">Your second round interview is scheduled for today at <strong>2:00 PM</strong>. This round will focus on system design and hands-on coding. Check your prep kit for tips!</div>
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <button class="btn btn-teal btn-sm" onclick="nav('schedule',document.querySelector('[onclick*=schedule]'))">📅 View Interview Details</button>
+        <button class="btn btn-ghost btn-sm" onclick="nav('prep',document.querySelector('[onclick*=prep]'))">🎯 Open Prep Hub</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Round History</div>
+      <div>
+        <div class="rh-item"><div class="rh-dot rhd-done"></div><div><div class="rh-name">Pre-screening Call</div><div style="font-size:11px;color:var(--text-lite)">HR · 20 min · Feb 10</div></div><span class="chip chip-green" style="font-size:10px">Passed ✓</span></div>
+        <div class="rh-item"><div class="rh-dot rhd-done"></div><div><div class="rh-name">Round 1 — Technical</div><div style="font-size:11px;color:var(--text-lite)">Rajesh Kumar · 45 min · Feb 12</div></div><span class="chip chip-green" style="font-size:10px">Passed ✓</span></div>
+        <div class="rh-item"><div class="rh-dot rhd-active"></div><div><div class="rh-name">Round 2 — System Design</div><div style="font-size:11px;color:var(--text-lite)">Panel · 60 min · Today 2:00 PM</div></div><span class="chip chip-teal" style="font-size:10px">In Progress</span></div>
+        <div class="rh-item"><div class="rh-dot rhd-pend"></div><div><div class="rh-name">Round 3 — Culture Fit</div><div style="font-size:11px;color:var(--text-lite)">Scheduled after Round 2</div></div><span class="chip chip-gray" style="font-size:10px">Upcoming</span></div>
+        <div class="rh-item"><div class="rh-dot rhd-pend"></div><div><div class="rh-name">HR Round & Offer</div><div style="font-size:11px;color:var(--text-lite)">Final stage</div></div><span class="chip chip-gray" style="font-size:10px">Upcoming</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Your Application Stats</div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="kpi" style="border:none;padding:0;box-shadow:none;display:flex;align-items:center;gap:14px">
+          <div class="kpi-ico ki1">📅</div>
+          <div><div class="kpi-val" style="font-size:24px">18</div><div class="kpi-lbl">Days in Process</div></div>
+        </div>
+        <div style="border-top:1px solid var(--table-border);padding-top:14px"><div style="font-size:12px;font-weight:700;color:var(--text-mid);margin-bottom:8px;font-family:'Space Grotesk',sans-serif">Process Completion</div><div class="pbar"><div class="pfill" style="width:57%"></div></div><div style="font-size:11px;color:var(--text-lite);margin-top:5px">4 of 7 stages done · 57%</div></div>
+        <div style="border-top:1px solid var(--table-border);padding-top:14px">
+          <div style="font-size:12px;font-weight:700;color:var(--text-mid);margin-bottom:10px;font-family:'Space Grotesk',sans-serif">Applied Role</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text)">Senior React Developer</div>
+          <div style="font-size:12px;color:var(--text-lite);margin-top:3px">Hireon Technologies · Bengaluru</div>
+          <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+            <span style="background:rgba(124,58,237,.08);color:var(--brand);font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px">React</span>
+            <span style="background:rgba(124,58,237,.08);color:var(--brand);font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px">TypeScript</span>
+            <span style="background:rgba(124,58,237,.08);color:var(--brand);font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px">Node.js</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 2. INTERVIEW SCHEDULE ══ -->
+<div class="page" id="page-schedule">
+  <div class="ph">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div><div class="pt">My Interview Schedule 📅</div><div class="ps">All your upcoming and past interviews in one place.</div></div>
+      <span class="chip chip-teal"><span class="chd"></span>1 Interview Today</span>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:20px">
+    <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:1.5px;text-transform:uppercase;display:flex;align-items:center;gap:8px;font-family:'Space Grotesk',sans-serif"><span style="width:8px;height:8px;border-radius:50%;background:var(--teal);display:inline-block;animation:blink 2s infinite"></span>Today — Feb 19, 2026</div>
+    <div class="int-card ic-live">
+      <div class="int-time"><div class="int-hr">2:00</div><div class="int-ampm">PM</div><div class="int-dt">Today</div></div>
+      <div class="int-info">
+        <div class="int-title">Round 2 — System Design & Coding</div>
+        <div class="int-round">Senior React Developer · 60 min</div>
+        <div class="int-meta">
+          <div class="int-meta-item">👤 <span>Panel: Rajesh K., Preethi S.</span></div>
+          <div class="int-meta-item">⏱️ <span>60 minutes</span></div>
+        </div>
+        <div class="int-link">🎥 <a href="#">meet.google.com/hrn-r2-2024</a></div>
+      </div>
+      <div class="int-actions">
+        <button class="btn btn-teal btn-sm" onclick="showToast('🎥','Opening Google Meet...')">Join Meet</button>
+        <button class="btn btn-ghost btn-sm" onclick="nav('prep',document.querySelector('[onclick*=prep]'))">🎯 Prep Kit</button>
+        <button class="btn btn-outline btn-sm" onclick="showToast('📅','Reschedule request sent!')">Reschedule</button>
+      </div>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--brand);letter-spacing:1.5px;text-transform:uppercase;font-family:'Space Grotesk',sans-serif;margin-top:4px">Upcoming</div>
+    <div class="int-card ic-up">
+      <div class="int-time"><div class="int-hr">11:00</div><div class="int-ampm">AM</div><div class="int-dt">Feb 24</div></div>
+      <div class="int-info">
+        <div class="int-title">Round 3 — Culture Fit</div>
+        <div class="int-round">Senior React Developer · 45 min</div>
+        <div class="int-meta">
+          <div class="int-meta-item">👤 <span>Arjun M. (Engineering Manager)</span></div>
+          <div class="int-meta-item">⏱️ <span>45 minutes</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--text-lite);font-style:italic">Link will be shared 30 min before the interview.</div>
+      </div>
+      <div class="int-actions">
+        <button class="btn btn-ghost btn-sm" onclick="showToast('✅','Confirmed!')">✓ Confirm</button>
+        <button class="btn btn-outline btn-sm" onclick="showToast('📅','Reschedule request sent!')">Reschedule</button>
+      </div>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--text-lite);letter-spacing:1.5px;text-transform:uppercase;font-family:'Space Grotesk',sans-serif;margin-top:4px">Completed</div>
+    <div class="int-card ic-done" style="opacity:.75">
+      <div class="int-time"><div class="int-hr" style="color:var(--text-lite)">10:00</div><div class="int-ampm">AM</div><div class="int-dt">Feb 12</div></div>
+      <div class="int-info">
+        <div class="int-title">Round 1 — Technical Interview</div>
+        <div class="int-round">Senior React Developer · 45 min · Completed ✅</div>
+        <div class="int-meta"><div class="int-meta-item">👤 <span>Rajesh Kumar (Lead Engineer)</span></div></div>
+      </div>
+      <div class="int-actions"><span class="chip chip-green" style="font-size:11px">Passed ✓</span></div>
+    </div>
+    <div class="int-card ic-done" style="opacity:.75">
+      <div class="int-time"><div class="int-hr" style="color:var(--text-lite)">3:00</div><div class="int-ampm">PM</div><div class="int-dt">Feb 10</div></div>
+      <div class="int-info">
+        <div class="int-title">Pre-screening Call</div>
+        <div class="int-round">HR Round · 20 min · Completed ✅</div>
+        <div class="int-meta"><div class="int-meta-item">👤 <span>Meera (HR Team)</span></div></div>
+      </div>
+      <div class="int-actions"><span class="chip chip-green" style="font-size:11px">Passed ✓</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 3. PROFILE & RESUME ══ -->
+<div class="page" id="page-profile">
+  <div class="ph"><div class="pt">My Profile & Resume 👤</div><div class="ps">Keep your profile up to date to help interviewers understand you better.</div></div>
+  <div class="g2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="ctitle">Profile</div>
+      <div style="display:flex;align-items:center;gap:18px;margin-bottom:22px">
+        <div class="prof-av-big">P</div>
+        <div>
+          <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text)">Priya Sharma</div>
+          <div style="font-size:13px;color:var(--text-mid);margin-top:3px">Senior React Developer</div>
+          <div style="margin-top:8px;display:flex;gap:7px;flex-wrap:wrap">
+            <span class="chip chip-green"><span class="chd"></span>Profile Complete</span>
+            <span class="chip chip-violet"><span class="chd"></span>Active</span>
+          </div>
+        </div>
+      </div>
+      <div class="frow" style="margin-bottom:12px">
+        <div><label class="flabel">First Name</label><input class="finput" value="Priya"></div>
+        <div><label class="flabel">Last Name</label><input class="finput" value="Sharma"></div>
+      </div>
+      <div style="margin-bottom:12px"><label class="flabel">Email</label><input class="finput" value="priya.sharma@email.com"></div>
+      <div class="frow" style="margin-bottom:12px">
+        <div><label class="flabel">Phone</label><input class="finput" value="+91 98765 12345"></div>
+        <div><label class="flabel">Location</label><input class="finput" value="Bengaluru, KA"></div>
+      </div>
+      <div class="frow" style="margin-bottom:12px">
+        <div><label class="flabel">Experience</label><input class="finput" value="6 Years"></div>
+        <div><label class="flabel">Notice Period</label><input class="finput" value="30 Days"></div>
+      </div>
+      <div class="frow" style="margin-bottom:12px">
+        <div><label class="flabel">Current CTC</label><input class="finput" value="₹22,00,000 per annum" placeholder="e.g. ₹22,00,000 per annum"></div>
+        <div><label class="flabel">Expected CTC</label><input class="finput" value="₹32,00,000 per annum" placeholder="e.g. ₹32,00,000 per annum"></div>
+      </div>
+      <div class="frow" style="margin-bottom:12px">
+        <div><label class="flabel">Work Mode Preference</label>
+          <select class="finput"><option>Hybrid (3 days office)</option><option>Remote</option><option>On-site</option></select>
+        </div>
+        <div><label class="flabel">Availability</label>
+          <select class="finput"><option>After 30-day notice</option><option>Immediate</option><option>After 60-day notice</option><option>After 90-day notice</option></select>
+        </div>
+      </div>
+
+      <!-- Interview Availability -->
+      <div style="border-top:1px solid var(--table-border);padding-top:14px;margin-bottom:12px">
+        <div style="font-size:12px;font-weight:700;color:var(--text-mid);margin-bottom:10px;font-family:'Space Grotesk',sans-serif;letter-spacing:.5px">📅 INTERVIEW AVAILABILITY</div>
+        <div class="frow" style="margin-bottom:10px">
+          <div><label class="flabel">Preferred Interview Days</label>
+            <select class="finput"><option>Mon – Fri (Any)</option><option>Mon, Wed, Fri</option><option>Tue, Thu</option><option>Weekdays only</option></select>
+          </div>
+          <div><label class="flabel">Preferred Time Slot</label>
+            <select class="finput"><option>Morning (9 AM – 12 PM)</option><option>Afternoon (12 PM – 3 PM)</option><option>Evening (3 PM – 6 PM)</option><option>Flexible</option></select>
+          </div>
+        </div>
+        <div style="margin-bottom:10px"><label class="flabel">Blackout Dates (unavailable)</label><input class="finput" placeholder="e.g. Feb 25 – Feb 28, Mar 10" value=""></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--input-bg);border:1.5px solid var(--input-border);border-radius:10px;cursor:pointer" onclick="this.classList.toggle('avail-on');this.querySelector('.avail-chk').textContent=this.classList.contains('avail-on')?'✅':'⬜';this.querySelector('.avail-lbl').style.color=this.classList.contains('avail-on')?'var(--green)':'var(--text-mid)'">
+          <span class="avail-chk">⬜</span>
+          <span class="avail-lbl" style="font-size:13px;font-weight:600;color:var(--text-mid)">Available for weekend interviews if needed</span>
+        </div>
+      </div>
+
+      <!-- Other Offers -->
+      <div style="border-top:1px solid var(--table-border);padding-top:14px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-size:12px;font-weight:700;color:var(--text-mid);font-family:'Space Grotesk',sans-serif;letter-spacing:.5px">💼 OTHER OFFERS IN HAND</div>
+          <button class="btn btn-ghost btn-xs" onclick="addOtherOffer()">+ Add Offer</button>
+        </div>
+        <div id="other-offers-list" style="display:flex;flex-direction:column;gap:8px">
+          <div class="other-offer-item" style="background:var(--input-bg);border:1.5px solid var(--input-border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px">
+            <span style="font-size:18px">🏢</span>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:700;color:var(--text)">TechCorp India</div>
+              <div style="font-size:11px;color:var(--text-lite);margin-top:2px">Senior Frontend Engineer · ₹28 LPA · Offer valid till Mar 10</div>
+            </div>
+            <span class="chip chip-amber" style="font-size:10px">Active Offer</span>
+            <button class="btn btn-xs btn-red" onclick="this.closest('.other-offer-item').remove();showToast('🗑️','Offer removed')">✕</button>
+          </div>
+        </div>
+        <div style="margin-top:10px;padding:10px 14px;background:rgba(245,158,11,.05);border:1.5px dashed rgba(245,158,11,.25);border-radius:10px;font-size:12px;color:var(--text-mid);line-height:1.6">
+          💡 Sharing other offers helps the HR team prioritise your process and respond faster.
+        </div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="showToast('✅','Profile saved!')">Save Changes</button>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:18px">
+        <div class="ctitle">Profile Completeness <span class="ctag green">92%</span></div>
+        <div class="pbar" style="height:10px;margin-bottom:12px"><div class="pfill" style="width:92%"></div></div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-mid)"><span>✅</span> Personal details</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-mid)"><span>✅</span> Resume uploaded</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-mid)"><span>✅</span> Skills added</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-mid)"><span>✅</span> Work experience</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-mid)"><span>✅</span> Current & Expected CTC</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-lite)"><span>⬜</span> LinkedIn profile (optional)</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-lite)"><span>⬜</span> Portfolio / GitHub link (optional)</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Skills</div>
+        <div id="skills-wrap" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px">
+          <span class="skill-tag">React</span><span class="skill-tag">TypeScript</span><span class="skill-tag">Node.js</span><span class="skill-tag">GraphQL</span><span class="skill-tag">Redux</span><span class="skill-tag">CSS</span><span class="skill-tag">Jest</span><span class="skill-tag">PostgreSQL</span>
+          <span class="skill-tag add" onclick="addSkill()">+ Add Skill</span>
+        </div>
+        <div style="border-top:1px solid var(--table-border);padding-top:14px">
+          <div style="font-size:12px;font-weight:700;color:var(--text-mid);margin-bottom:4px;font-family:'Space Grotesk',sans-serif">LINKS</div>
+          <input class="finput" style="margin-bottom:8px" placeholder="LinkedIn URL" value="linkedin.com/in/priya-sharma">
+          <input class="finput" placeholder="GitHub / Portfolio URL" value="github.com/priya-dev">
+          <button class="btn btn-ghost btn-sm" style="margin-top:10px;width:100%;justify-content:center" onclick="showToast('💾','Links saved!')">Save Links</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Resume</div>
+    <div class="g2">
+      <div>
+        <div style="background:var(--kpi);border:1px solid var(--table-border);border-radius:14px;padding:20px;display:flex;align-items:center;gap:16px;margin-bottom:14px">
+          <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(124,58,237,.05));display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">📄</div>
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:700;color:var(--text)">Priya_Sharma_Resume.pdf</div>
+            <div style="font-size:11px;color:var(--text-lite);margin-top:2px">Uploaded Feb 3, 2026 · 245 KB</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('📥','Downloading resume...')">⬇ Download</button>
+        </div>
+        <div class="upload-zone" onclick="showToast('📤','Upload dialog opened')">
+          <div class="upload-zone-ico">☁️</div>
+          <div class="upload-zone-title">Upload New Resume</div>
+          <div class="upload-zone-sub">PDF, DOCX or TXT · Max 5MB</div>
+          <button class="btn btn-primary btn-sm" style="margin-top:14px" onclick="event.stopPropagation();showToast('📤','Upload dialog opened')">Choose File</button>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;font-family:'Space Grotesk',sans-serif">Summary / Cover Note</div>
+        <textarea class="ftarea" style="min-height:140px">Experienced React developer with 6 years building scalable web applications. Strong in TypeScript, GraphQL, and system design. Passionate about clean code and mentoring teams.</textarea>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="showToast('✅','Summary updated!')">Save Summary</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CURRENT OPENINGS ══ -->
+<div class="page" id="page-openings">
+  <div class="ph">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div><div class="pt">Current Openings 🏢</div><div class="ps">Explore all open roles at Hireon — apply or refer someone you know.</div></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input class="finput" style="width:200px;padding:8px 14px" placeholder="🔍 Search roles..." oninput="filterJobs(this.value)">
+        <select class="finput" style="width:140px;padding:8px 14px" onchange="filterJobs(document.querySelector('[oninput]').value)">
+          <option>All Departments</option>
+          <option>Engineering</option>
+          <option>Design</option>
+          <option>Product</option>
+          <option>Marketing</option>
+          <option>Sales</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active application banner -->
+  <div style="background:linear-gradient(135deg,rgba(6,182,212,.08),rgba(6,182,212,.03));border:1.5px solid rgba(6,182,212,.22);border-radius:14px;padding:14px 20px;margin-bottom:22px;display:flex;align-items:center;gap:14px">
+    <span style="font-size:24px">🎯</span>
+    <div style="flex:1">
+      <div style="font-size:13px;font-weight:700;color:var(--teal)">You're currently in the process for: Senior React Developer</div>
+      <div style="font-size:12px;color:var(--text-mid);margin-top:2px">Round 2 in progress — you can still refer friends to other open roles!</div>
+    </div>
+    <button class="btn btn-teal btn-sm" onclick="nav('journey',document.querySelector('[onclick*=journey]'))">View My Progress</button>
+  </div>
+
+  <div id="jobs-grid" style="display:flex;flex-direction:column;gap:14px">
+
+    <div class="job-card" data-dept="engineering">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+            <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(124,58,237,.05));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">💻</div>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:var(--text)">Senior React Developer</div>
+              <div style="font-size:12px;color:var(--text-lite)">Engineering · Bengaluru (Hybrid) · Full-time</div>
+            </div>
+            <span class="chip chip-teal" style="margin-left:4px"><span class="chd"></span>Your Role</span>
+          </div>
+          <div style="font-size:13px;color:var(--text-mid);line-height:1.65;margin-bottom:10px">Build and scale the Hireon candidate and recruiter platform. Own the React frontend, work closely with design and backend teams.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="background:rgba(124,58,237,.08);color:var(--brand);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">React</span>
+            <span style="background:rgba(124,58,237,.08);color:var(--brand);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">TypeScript</span>
+            <span style="background:rgba(124,58,237,.08);color:var(--brand);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">Node.js</span>
+            <span style="background:rgba(124,58,237,.08);color:var(--brand);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">5+ years</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px;align-items:flex-end;flex-shrink:0">
+          <div style="font-size:13px;font-weight:700;color:var(--green)">₹20–32 LPA</div>
+          <button class="btn btn-ghost btn-sm" onclick="openReferModal('Senior React Developer')">👥 Refer Someone</button>
+          <span style="font-size:11px;color:var(--text-lite)">Already applied</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-card" data-dept="engineering">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+            <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,rgba(6,182,212,.12),rgba(6,182,212,.05));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">⚙️</div>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:var(--text)">Backend Engineer — Node.js</div>
+              <div style="font-size:12px;color:var(--text-lite)">Engineering · Bengaluru (Remote) · Full-time</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:var(--text-mid);line-height:1.65;margin-bottom:10px">Design and build APIs powering the Hireon platform — ATS, notifications, and AI pipelines. Strong Node.js and PostgreSQL expected.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="background:rgba(6,182,212,.08);color:var(--teal);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">Node.js</span>
+            <span style="background:rgba(6,182,212,.08);color:var(--teal);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">PostgreSQL</span>
+            <span style="background:rgba(6,182,212,.08);color:var(--teal);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">AWS</span>
+            <span style="background:rgba(6,182,212,.08);color:var(--teal);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">4+ years</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px;align-items:flex-end;flex-shrink:0">
+          <div style="font-size:13px;font-weight:700;color:var(--green)">₹18–28 LPA</div>
+          <button class="btn btn-primary btn-sm" onclick="showToast('📤','Application submitted!')">Apply Now</button>
+          <button class="btn btn-ghost btn-sm" onclick="openReferModal('Backend Engineer — Node.js')">👥 Refer Someone</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-card" data-dept="design">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+            <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(236,72,153,.05));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🎨</div>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:var(--text)">Senior Product Designer</div>
+              <div style="font-size:12px;color:var(--text-lite)">Design · Bengaluru (Hybrid) · Full-time</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:var(--text-mid);line-height:1.65;margin-bottom:10px">Own the design of Hireon's core product — candidate portal, recruiter dashboard, and AI-powered workflows. Figma expert required.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="background:rgba(236,72,153,.08);color:var(--pink);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">Figma</span>
+            <span style="background:rgba(236,72,153,.08);color:var(--pink);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">Design Systems</span>
+            <span style="background:rgba(236,72,153,.08);color:var(--pink);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">UX Research</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px;align-items:flex-end;flex-shrink:0">
+          <div style="font-size:13px;font-weight:700;color:var(--green)">₹16–24 LPA</div>
+          <button class="btn btn-primary btn-sm" onclick="showToast('📤','Application submitted!')">Apply Now</button>
+          <button class="btn btn-ghost btn-sm" onclick="openReferModal('Senior Product Designer')">👥 Refer Someone</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-card" data-dept="product">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+            <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(245,158,11,.05));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📦</div>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:var(--text)">Product Manager — AI Platform</div>
+              <div style="font-size:12px;color:var(--text-lite)">Product · Bengaluru (Hybrid) · Full-time</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:var(--text-mid);line-height:1.65;margin-bottom:10px">Drive the vision for Hireon's AI features — candidate ranking, JD generation, and smart scheduling. Work cross-functionally with engineering and design.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="background:rgba(245,158,11,.08);color:#d97706;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">Product Strategy</span>
+            <span style="background:rgba(245,158,11,.08);color:#d97706;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">AI/ML Familiarity</span>
+            <span style="background:rgba(245,158,11,.08);color:#d97706;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">5+ years</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px;align-items:flex-end;flex-shrink:0">
+          <div style="font-size:13px;font-weight:700;color:var(--green)">₹24–36 LPA</div>
+          <button class="btn btn-primary btn-sm" onclick="showToast('📤','Application submitted!')">Apply Now</button>
+          <button class="btn btn-ghost btn-sm" onclick="openReferModal('Product Manager — AI Platform')">👥 Refer Someone</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-card" data-dept="marketing">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+            <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(16,185,129,.05));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📣</div>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:var(--text)">Growth Marketing Manager</div>
+              <div style="font-size:12px;color:var(--text-lite)">Marketing · Remote · Full-time</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:var(--text-mid);line-height:1.65;margin-bottom:10px">Own user acquisition and growth for Hireon. Drive SEO, paid campaigns, and content strategy to help us scale from 500 to 5,000 companies.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="background:rgba(16,185,129,.08);color:var(--green);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">SEO</span>
+            <span style="background:rgba(16,185,129,.08);color:var(--green);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">Growth</span>
+            <span style="background:rgba(16,185,129,.08);color:var(--green);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">Analytics</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px;align-items:flex-end;flex-shrink:0">
+          <div style="font-size:13px;font-weight:700;color:var(--green)">₹14–20 LPA</div>
+          <button class="btn btn-primary btn-sm" onclick="showToast('📤','Application submitted!')">Apply Now</button>
+          <button class="btn btn-ghost btn-sm" onclick="openReferModal('Growth Marketing Manager')">👥 Refer Someone</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-card" data-dept="engineering">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+            <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(124,58,237,.05));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🤖</div>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:var(--text)">ML Engineer — NLP & Ranking</div>
+              <div style="font-size:12px;color:var(--text-lite)">Engineering · Bengaluru (Hybrid) · Full-time</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:var(--text-mid);line-height:1.65;margin-bottom:10px">Build the AI models powering candidate ranking, JD parsing, and interview question generation. Strong Python and LLM experience required.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="background:rgba(124,58,237,.08);color:var(--brand);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">Python</span>
+            <span style="background:rgba(124,58,237,.08);color:var(--brand);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">LLMs</span>
+            <span style="background:rgba(124,58,237,.08);color:var(--brand);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">NLP</span>
+            <span style="background:rgba(124,58,237,.08);color:var(--brand);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">4+ years</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px;align-items:flex-end;flex-shrink:0">
+          <div style="font-size:13px;font-weight:700;color:var(--green)">₹22–38 LPA</div>
+          <button class="btn btn-primary btn-sm" onclick="showToast('📤','Application submitted!')">Apply Now</button>
+          <button class="btn btn-ghost btn-sm" onclick="openReferModal('ML Engineer — NLP & Ranking')">👥 Refer Someone</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ 4. NOTIFICATIONS ══ -->
+<div class="page" id="page-notifications">
+  <div class="ph">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div><div class="pt">Notifications 🔔</div><div class="ps">All updates about your application in one place.</div></div>
+      <button class="btn btn-ghost btn-sm" onclick="markAllRead();showToast('✅','All marked as read')">Mark all read</button>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px" id="notif-list">
+    <div class="notif-item unread" onclick="markRead(this)">
+      <div class="notif-ico ki3">🎉</div>
+      <div style="flex:1">
+        <div class="notif-title">Offer Letter Received!</div>
+        <div class="notif-sub">Congratulations! Hireon has extended an offer for the Senior React Developer role. Please review and respond by Mar 5.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+        <div class="notif-time">Just now</div>
+        <div class="notif-unread-dot"></div>
+      </div>
+    </div>
+    <div class="notif-item unread" onclick="markRead(this)">
+      <div class="notif-ico ki1">📅</div>
+      <div style="flex:1">
+        <div class="notif-title">Interview Scheduled — Round 2</div>
+        <div class="notif-sub">Your Round 2 System Design interview has been scheduled for today at 2:00 PM. Check your prep kit before the interview!</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+        <div class="notif-time">2h ago</div>
+        <div class="notif-unread-dot"></div>
+      </div>
+    </div>
+    <div class="notif-item unread" onclick="markRead(this)">
+      <div class="notif-ico ki2">✅</div>
+      <div style="flex:1">
+        <div class="notif-title">Round 1 Cleared!</div>
+        <div class="notif-sub">Great news! You've successfully cleared Round 1 — Technical Interview. We'll be in touch shortly with your Round 2 schedule.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+        <div class="notif-time">Feb 12</div>
+        <div class="notif-unread-dot"></div>
+      </div>
+    </div>
+    <div class="notif-item" onclick="markRead(this)">
+      <div class="notif-ico ki4">🧠</div>
+      <div style="flex:1">
+        <div class="notif-title">Prep Kit Updated for Round 2</div>
+        <div class="notif-sub">We've added system design questions and tips specific to your upcoming Round 2 interview. Check them out!</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+        <div class="notif-time">Feb 11</div>
+      </div>
+    </div>
+    <div class="notif-item" onclick="markRead(this)">
+      <div class="notif-ico ki5">📞</div>
+      <div style="flex:1">
+        <div class="notif-title">Pre-screening Call Cleared</div>
+        <div class="notif-sub">You cleared the pre-screening call with the HR team. Moving to the technical rounds!</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+        <div class="notif-time">Feb 10</div>
+      </div>
+    </div>
+    <div class="notif-item" onclick="markRead(this)">
+      <div class="notif-ico ki2">🎯</div>
+      <div style="flex:1">
+        <div class="notif-title">Application Shortlisted</div>
+        <div class="notif-sub">Your application for Senior React Developer has been shortlisted. Our team will contact you to schedule an interview.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+        <div class="notif-time">Feb 7</div>
+      </div>
+    </div>
+    <div class="notif-item" onclick="markRead(this)">
+      <div class="notif-ico ki1">📥</div>
+      <div style="flex:1">
+        <div class="notif-title">Application Received</div>
+        <div class="notif-sub">We've received your application for Senior React Developer. Our team will review and get back within 3–5 business days.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+        <div class="notif-time">Feb 3</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 5. INTERVIEW PREP HUB ══ -->
+<div class="page" id="page-prep">
+  <div class="ph">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div><div class="pt">Interview Prep Hub 🎯</div><div class="ps">AI-generated tips, questions, and flashcards — tailored for your Round 2 interview.</div></div>
+      <div style="background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(236,72,153,.04));border:1px solid rgba(124,58,237,.14);border-radius:12px;padding:10px 16px;text-align:center">
+        <div style="font-size:10px;font-weight:700;color:var(--text-lite);font-family:'Space Grotesk',sans-serif">NEXT INTERVIEW</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--brand)">Today at 2:00 PM</div>
+        <div style="font-size:11px;color:var(--text-lite)">Round 2 · System Design</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flashcard -->
+  <div class="flashcard" style="margin-bottom:20px" onclick="nextFlash()">
+    <div>
+      <div class="flashcard-label">Question 1 of 6 · System Design</div>
+      <div class="flashcard-q" id="flash-q">Design a real-time notification system that serves 1 million concurrent users. Walk through your architecture choices.</div>
+    </div>
+    <div class="flashcard-hint">Tap to see next question →</div>
+  </div>
+
+  <div class="g2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="ctitle">Topics to Prepare <span class="ctag">Round 2 Specific</span></div>
+      <div>
+        <div class="ph-topic"><div class="ph-topic-head"><div class="ph-topic-ico ki1">⚙️</div><div class="ph-topic-name">System Design Fundamentals</div><div class="ph-topic-pct">High Priority</div></div><div class="ph-topic-bar"><div class="pbar" style="margin-top:8px"><div class="pfill" style="width:72%"></div></div><div style="font-size:10px;color:var(--text-lite);margin-top:3px">Your estimated readiness: 72%</div></div></div>
+        <div class="ph-topic"><div class="ph-topic-head"><div class="ph-topic-ico ki2">📡</div><div class="ph-topic-name">Real-time Systems & WebSockets</div><div class="ph-topic-pct">High Priority</div></div><div class="ph-topic-bar"><div class="pbar" style="margin-top:8px"><div class="pfill" style="width:55%"></div></div><div style="font-size:10px;color:var(--text-lite);margin-top:3px">Your estimated readiness: 55%</div></div></div>
+        <div class="ph-topic"><div class="ph-topic-head"><div class="ph-topic-ico ki3">🗄️</div><div class="ph-topic-name">Database Design & Scaling</div><div class="ph-topic-pct">Medium</div></div><div class="ph-topic-bar"><div class="pbar" style="margin-top:8px"><div class="pfill" style="width:80%"></div></div><div style="font-size:10px;color:var(--text-lite);margin-top:3px">Your estimated readiness: 80%</div></div></div>
+        <div class="ph-topic"><div class="ph-topic-head"><div class="ph-topic-ico ki4">🚀</div><div class="ph-topic-name">Performance & Caching</div><div class="ph-topic-pct">Medium</div></div><div class="ph-topic-bar"><div class="pbar" style="margin-top:8px"><div class="pfill" style="width:65%"></div></div><div style="font-size:10px;color:var(--text-lite);margin-top:3px">Your estimated readiness: 65%</div></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">AI Practice Questions</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="prep-tip"><div class="prep-tip-ico ki1">⚙️</div><div><div class="prep-tip-text">Design a URL shortener like bit.ly — cover storage, hashing, redirection, and scale to 1B links.</div><span class="prep-tip-tag ptt-v">System Design</span></div></div>
+        <div class="prep-tip"><div class="prep-tip-ico ki2">📡</div><div><div class="prep-tip-text">How would you implement a real-time chat feature in React? Discuss WebSockets vs SSE vs polling.</div><span class="prep-tip-tag ptt-t">Real-time</span></div></div>
+        <div class="prep-tip"><div class="prep-tip-ico ki3">🗄️</div><div><div class="prep-tip-text">You need to design a database schema for a multi-tenant SaaS app — what approach would you take?</div><span class="prep-tip-tag ptt-v">Database</span></div></div>
+        <div class="prep-tip"><div class="prep-tip-ico ki4">🚀</div><div><div class="prep-tip-text">How do you optimise a React app that's rendering 10,000 rows in a table? Walk through your approach.</div><span class="prep-tip-tag ptt-t">Performance</span></div></div>
+        <div class="prep-tip"><div class="prep-tip-ico ki5">🤝</div><div><div class="prep-tip-text">Tell me about a time you had to refactor a major part of the codebase. How did you plan and execute it?</div><span class="prep-tip-tag ptt-c">Behavioural</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Pre-Interview Tips for Round 2 <span class="ctag green">From Hireon AI</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+      <div style="background:linear-gradient(135deg,rgba(124,58,237,.07),rgba(124,58,237,.03));border:1px solid rgba(124,58,237,.14);border-radius:12px;padding:16px">
+        <div style="font-size:22px;margin-bottom:8px">🎨</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px">Structure Your Answers</div>
+        <div style="font-size:12px;color:var(--text-mid);line-height:1.65">Use the Requirements → Design → Trade-offs framework for every system design question.</div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(6,182,212,.07),rgba(6,182,212,.03));border:1px solid rgba(6,182,212,.14);border-radius:12px;padding:16px">
+        <div style="font-size:22px;margin-bottom:8px">💬</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px">Think Out Loud</div>
+        <div style="font-size:12px;color:var(--text-mid);line-height:1.65">Interviewers want to follow your thought process, not just see the answer. Share every assumption you make.</div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(16,185,129,.07),rgba(16,185,129,.03));border:1px solid rgba(16,185,129,.14);border-radius:12px;padding:16px">
+        <div style="font-size:22px;margin-bottom:8px">⏱️</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px">Time Management</div>
+        <div style="font-size:12px;color:var(--text-mid);line-height:1.65">This is a 60 min session. Aim for 10 min scoping, 30 min design, 15 min deep-dive, 5 min questions.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 6. OFFER & DOCUMENTS ══ -->
+<div class="page" id="page-offer">
+  <div class="ph"><div class="pt">Offer & Documents 📄</div><div class="ps">Review your offer letter, CTC breakdown, and submit required documents.</div></div>
+
+  <!-- Offer banner -->
+  <div class="offer-banner">
+    <div class="ob-label">🎉 Offer Extended</div>
+    <div class="ob-title">Congratulations, Priya!</div>
+    <div class="ob-sub">Hireon Technologies is thrilled to offer you the role of <strong>Senior React Developer</strong>. Please review and respond by <strong>March 5, 2026</strong>.</div>
+    <div class="ob-actions">
+      <button class="ob-btn ob-accept" onclick="showToast('🎉','Offer accepted! Welcome aboard!')">✅ Accept Offer</button>
+      <button class="ob-btn ob-negotiate" onclick="openNegotiate()">💬 Negotiate</button>
+      <button class="ob-btn ob-decline" onclick="showToast('😔','Decline request noted. HR will reach out.')">✗ Decline</button>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="ctitle">CTC Breakdown <span class="ctag green">Annual</span></div>
+      <div>
+        <div class="ctc-row"><span class="ctc-label">Basic Salary</span><span class="ctc-val">₹14,40,000</span></div>
+        <div class="ctc-row"><span class="ctc-label">House Rent Allowance (HRA)</span><span class="ctc-val">₹7,20,000</span></div>
+        <div class="ctc-row"><span class="ctc-label">Special Allowance</span><span class="ctc-val">₹2,40,000</span></div>
+        <div class="ctc-row"><span class="ctc-label">Performance Bonus (variable)</span><span class="ctc-val">Up to ₹3,00,000</span></div>
+        <div class="ctc-row"><span class="ctc-label">ESOP / Stock Options</span><span class="ctc-val">₹2,00,000</span></div>
+        <div class="ctc-row"><span class="ctc-label">Health Insurance (family)</span><span class="ctc-val">Included</span></div>
+        <div class="ctc-row total"><span class="ctc-label">Total Fixed CTC</span><span class="ctc-val">₹29,00,000</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Offer Details</div>
+      <div style="display:flex;flex-direction:column;gap:0">
+        <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--table-border)"><span style="font-size:13px;color:var(--text-mid)">Role</span><span style="font-size:13px;font-weight:700;color:var(--text)">Senior React Developer</span></div>
+        <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--table-border)"><span style="font-size:13px;color:var(--text-mid)">Department</span><span style="font-size:13px;font-weight:700;color:var(--text)">Engineering — Frontend</span></div>
+        <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--table-border)"><span style="font-size:13px;color:var(--text-mid)">Location</span><span style="font-size:13px;font-weight:700;color:var(--text)">Bengaluru (Hybrid)</span></div>
+        <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--table-border)"><span style="font-size:13px;color:var(--text-mid)">Joining Date</span><span style="font-size:13px;font-weight:700;color:var(--text)">March 17, 2026</span></div>
+        <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--table-border)"><span style="font-size:13px;color:var(--text-mid)">Working Days</span><span style="font-size:13px;font-weight:700;color:var(--text)">Mon – Fri · 3 days in office</span></div>
+        <div style="display:flex;justify-content:space-between;padding:12px 0"><span style="font-size:13px;color:var(--text-mid)">Offer Valid Till</span><span style="font-size:13px;font-weight:700;color:var(--red)">March 5, 2026</span></div>
+      </div>
+      <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:12px" onclick="showToast('📥','Downloading offer letter...')">📄 Download Offer Letter</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Documents to Submit <span class="ctag amber">3 Pending</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="doc-item"><div class="doc-ico ki3">🪪</div><div><div class="doc-name">Aadhaar Card</div><div class="doc-req">Required · Both sides</div></div><div class="doc-status-icon">✅</div></div>
+      <div class="doc-item"><div class="doc-ico ki3">📋</div><div><div class="doc-name">PAN Card</div><div class="doc-req">Required</div></div><div class="doc-status-icon">✅</div></div>
+      <div class="doc-item" onclick="showToast('📤','Upload dialog opened')" style="border-color:rgba(245,158,11,.25)"><div class="doc-ico ki4">📄</div><div><div class="doc-name">Relieving Letter</div><div class="doc-req">Required · Previous employer</div></div><div class="doc-status-icon" style="font-size:13px;color:var(--amber);font-weight:700">Upload</div></div>
+      <div class="doc-item" onclick="showToast('📤','Upload dialog opened')" style="border-color:rgba(245,158,11,.25)"><div class="doc-ico ki4">🎓</div><div><div class="doc-name">Degree Certificate</div><div class="doc-req">Required · Highest qualification</div></div><div class="doc-status-icon" style="font-size:13px;color:var(--amber);font-weight:700">Upload</div></div>
+      <div class="doc-item" onclick="showToast('📤','Upload dialog opened')" style="border-color:rgba(245,158,11,.25)"><div class="doc-ico ki4">💰</div><div><div class="doc-name">Last 3 Months Payslips</div><div class="doc-req">Required</div></div><div class="doc-status-icon" style="font-size:13px;color:var(--amber);font-weight:700">Upload</div></div>
+      <div class="doc-item"><div class="doc-ico ki2">🏦</div><div><div class="doc-name">Bank Account Details</div><div class="doc-req">For salary processing</div></div><div class="doc-status-icon">✅</div></div>
+    </div>
+    <div style="margin-top:16px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--text-mid)">
+      📋 <strong>Please submit all documents before March 10, 2026</strong> to ensure smooth onboarding. Reach out to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="51392311393823343e3f7f383f">[email&#160;protected]</a> for any queries.
+    </div>
+    <button class="btn btn-primary" style="margin-top:14px" onclick="showToast('📦','All ready documents submitted!')">Submit Completed Documents</button>
+  </div>
+</div>
+
+</div></div></div>
+
+<!-- REFER MODAL -->
+<div class="moverlay" id="refer-modal" onclick="if(event.target===this)closeMod('refer-modal')">
+  <div class="mbox">
+    <div class="mhead">
+      <div>
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--text)">👥 Refer Someone</div>
+        <div style="font-size:12px;color:var(--text-mid);margin-top:3px">Referring for: <strong id="refer-role-name"></strong></div>
+      </div>
+      <button class="mclose" onclick="closeMod('refer-modal')">✕</button>
+    </div>
+    <div class="mbody">
+      <div style="background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(16,185,129,.03));border:1px solid rgba(16,185,129,.18);border-radius:12px;padding:14px 16px;margin-bottom:20px;font-size:12px;color:var(--text-mid);line-height:1.7">
+        🎁 <strong style="color:var(--green)">Referral Bonus:</strong> Earn ₹10,000 if your referral gets hired and completes 3 months! Your referral gets priority review within 48 hours.
+      </div>
+      <div class="frow" style="margin-bottom:14px">
+        <div><label class="flabel">Referee's First Name</label><input class="finput" id="ref-fname" placeholder="e.g. Arjun"></div>
+        <div><label class="flabel">Referee's Last Name</label><input class="finput" id="ref-lname" placeholder="e.g. Mehta"></div>
+      </div>
+      <div style="margin-bottom:14px"><label class="flabel">Referee's Email</label><input class="finput" id="ref-email" placeholder="arjun.mehta@email.com"></div>
+      <div style="margin-bottom:14px"><label class="flabel">Referee's Phone (optional)</label><input class="finput" placeholder="+91 98765 00000"></div>
+      <div style="margin-bottom:14px"><label class="flabel">How do you know them?</label>
+        <select class="finput">
+          <option>Ex-colleague</option>
+          <option>Friend</option>
+          <option>College batchmate</option>
+          <option>Professional connection</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div style="margin-bottom:18px"><label class="flabel">Why are you recommending them?</label><textarea class="ftarea" placeholder="Share why this person would be a great fit for the role — their skills, work ethic, experience..."></textarea></div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="submitRefer()">Submit Referral 🚀</button>
+        <button class="btn btn-outline" onclick="closeMod('refer-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEGOTIATE MODAL -->
+<div class="moverlay" id="neg-modal" onclick="if(event.target===this)closeMod('neg-modal')">
+  <div class="mbox">
+    <div class="mhead">
+      <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--text)">Negotiate Offer 💬</div>
+      <button class="mclose" onclick="closeMod('neg-modal')">✕</button>
+    </div>
+    <div class="mbody">
+      <div style="font-size:13px;color:var(--text-mid);margin-bottom:18px;line-height:1.7">Share your expected CTC and reasoning — our HR team will review and get back within 2 business days.</div>
+      <div style="margin-bottom:14px"><label class="flabel">Current CTC</label><input class="finput" value="₹22,00,000 per annum"></div>
+      <div style="margin-bottom:14px"><label class="flabel">Expected CTC</label><input class="finput" placeholder="e.g. ₹32,00,000 per annum"></div>
+      <div style="margin-bottom:18px"><label class="flabel">Reason / Context</label><textarea class="ftarea" placeholder="Share why you're expecting a different CTC — competing offers, market benchmarks, specific skills..."></textarea></div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="closeMod('neg-modal');showToast('📨','Negotiation request sent! HR will respond in 2 days.')">Send Request</button>
+        <button class="btn btn-outline" onclick="closeMod('neg-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="toast-ico" id="toast-ico"></span><span id="toast-msg"></span></div>
+
+<script>
+// OFFER LOCK — only accessible after final round cleared
+// OFFER_UNLOCKED = false means candidate hasn't cleared final round yet
+const OFFER_UNLOCKED = false;
+
+// FLASHCARD QUESTIONS
+const FLASHES=[
+  "Design a real-time notification system for 1 million concurrent users. Walk through your architecture choices.",
+  "How would you build a scalable file upload service (like Google Drive) that handles 100GB files?",
+  "Design Twitter's trending topics feature — from data collection to serving the feed.",
+  "Walk me through how you'd optimise a React application rendering 10,000 rows without pagination.",
+  "Design a distributed rate limiter that works across multiple servers in different regions.",
+  "How would you architect a multi-tenant SaaS product where each tenant needs data isolation?"
+];
+let flashIdx=0;
+function nextFlash(){
+  flashIdx=(flashIdx+1)%FLASHES.length;
+  const el=document.getElementById('flash-q');
+  el.style.opacity='0';
+  setTimeout(()=>{el.textContent=FLASHES[flashIdx];el.style.opacity='1';},200);
+  document.querySelector('.flashcard-label').textContent=`Question ${flashIdx+1} of ${FLASHES.length} · System Design`;
+}
+document.getElementById('flash-q').style.transition='opacity .2s';
+
+// NOTIFICATIONS
+function markRead(el){
+  el.classList.remove('unread');
+  const dot=el.querySelector('.notif-unread-dot');
+  if(dot) dot.remove();
+  updateBadge();
+}
+function markAllRead(){
+  document.querySelectorAll('.notif-item.unread').forEach(el=>{
+    el.classList.remove('unread');
+    const dot=el.querySelector('.notif-unread-dot');
+    if(dot) dot.remove();
+  });
+  updateBadge();
+}
+function updateBadge(){
+  const count=document.querySelectorAll('.notif-item.unread').length;
+  const badge=document.querySelector('.sb-badge:not(.new):not(.green)');
+  if(badge) badge.textContent=count>0?count:'';
+}
+
+// SKILLS
+function addSkill(){
+  const name=prompt('Enter skill name:');
+  if(!name||!name.trim()) return;
+  const wrap=document.getElementById('skills-wrap');
+  const addBtn=wrap.querySelector('.add');
+  const tag=document.createElement('span');
+  tag.className='skill-tag';
+  tag.textContent=name.trim();
+  wrap.insertBefore(tag,addBtn);
+  showToast('✅','Skill added!');
+}
+
+// NAV
+function nav(id,el){
+  if(id==='offer' && !OFFER_UNLOCKED){
+    showToast('🔒','Offer & Documents will be unlocked once you clear the Final Round.');
+    return;
+  }
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('active'));
+  if(el) el.classList.add('active');
+  document.getElementById('main').scrollTop=0;
+}
+// Unlock offer sidebar item visually when OFFER_UNLOCKED is true
+(function(){
+  if(OFFER_UNLOCKED){
+    const sb=document.getElementById('sb-offer');
+    sb.style.opacity='1';
+    sb.style.cursor='pointer';
+    sb.title='';
+    sb.querySelector('span:last-child').remove();
+    const badge=document.createElement('span');
+    badge.className='sb-badge green';
+    badge.textContent='New!';
+    sb.appendChild(badge);
+  }
+})();
+
+// ADD OTHER OFFER
+function addOtherOffer(){
+  const company=prompt('Company name:');
+  if(!company||!company.trim()) return;
+  const role=prompt('Role / Position:');
+  const ctc=prompt('Offered CTC (e.g. ₹30 LPA):');
+  const validity=prompt('Offer valid till (e.g. Mar 15):');
+  const item=document.createElement('div');
+  item.className='other-offer-item';
+  item.style.cssText='background:var(--input-bg);border:1.5px solid var(--input-border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px';
+  item.innerHTML=`<span style="font-size:18px">🏢</span>
+    <div style="flex:1">
+      <div style="font-size:13px;font-weight:700;color:var(--text)">${company.trim()}</div>
+      <div style="font-size:11px;color:var(--text-lite);margin-top:2px">${role||'—'} · ${ctc||'—'} · Offer valid till ${validity||'—'}</div>
+    </div>
+    <span class="chip chip-amber" style="font-size:10px">Active Offer</span>
+    <button class="btn btn-xs btn-red" onclick="this.closest('.other-offer-item').remove();showToast('🗑️','Offer removed')">✕</button>`;
+  document.getElementById('other-offers-list').appendChild(item);
+  showToast('✅','Offer added!');
+}
+
+// REFER MODAL
+function openReferModal(role){
+  document.getElementById('refer-role-name').textContent=role;
+  document.getElementById('refer-modal').classList.add('open');
+}
+function submitRefer(){
+  const fname=document.getElementById('ref-fname').value.trim();
+  const email=document.getElementById('ref-email').value.trim();
+  if(!fname||!email){showToast('⚠️','Please enter name and email');return;}
+  closeMod('refer-modal');
+  showToast('🚀','Referral submitted! We\'ll reach out to '+fname+' within 48 hours.');
+}
+
+// JOB FILTER
+function filterJobs(query){
+  const q=query.toLowerCase();
+  document.querySelectorAll('.job-card').forEach(card=>{
+    const text=card.textContent.toLowerCase();
+    card.style.display=text.includes(q)||!q?'block':'none';
+  });
+}
+
+// MODALS
+function openNegotiate(){ document.getElementById('neg-modal').classList.add('open'); }
+function closeMod(id){ document.getElementById(id).classList.remove('open'); }
+
+// THEME
+function toggleTheme(){
+  const html=document.documentElement, dark=html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme',dark?'light':'dark');
+  document.getElementById('theme-btn').textContent=dark?'🌙':'☀️';
+  document.getElementById('logo-text').className='logo-wordmark '+(dark?'lwl':'lwd');
+}
+
+// TOAST
+function showToast(icon,msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-ico').textContent=icon;
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),3500);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: hireon-backend
+    runtime: python
+    rootDir: hireon-backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash entrypoint.sh
+    envVars:
+      - key: DATABASE_URL
+        sync: false   # Set manually in Render dashboard (Neon DB URL)
+      - key: SECRET_KEY
+        generateValue: true
+      - key: APP_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: INFO
+      - key: FRONTEND_URL
+        sync: false   # Set to your Vercel frontend URL
+      - key: GROQ_API_KEY
+        sync: false
+      - key: MISTRAL_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM_NAME
+        value: Hireon
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false   # Set to https://<your-backend>.onrender.com/v1/calendar/callback
+      - key: MAX_FILE_SIZE_MB
+        value: 10
+      - key: UPLOAD_DIR
+        value: /app/uploads

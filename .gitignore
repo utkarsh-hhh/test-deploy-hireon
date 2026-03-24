@@ -1,0 +1,22 @@
+# Environment files — NEVER commit these
+.env
+.env.*
+!.env.example
+
+# Subdirectory envs
+hireon-backend/.env
+hireon-frontend/.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+
+# Misc
+*.log
+.DS_Store
