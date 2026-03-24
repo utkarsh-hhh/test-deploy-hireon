@@ -1,0 +1,17 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[redirects]]
+  # This proxies all requests from /api/* to your Render backend
+  # Update the "to" URL if your Render backend URL is different
+  from = "/api/*"
+  to = "https://hireon-backend.onrender.com/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  # SPA fallback: redirect all other requests to index.html
+  from = "/*"
+  to = "/index.html"
+  status = 200
